@@ -190,7 +190,11 @@ st.markdown("""
 <div class="description-box">
 <b>Welcome to the D&D Encounter Generator!</b><br>
 This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!<br><br>
-<b>How it works:</b><br>
+A balanced encounter should be challenging but not deadly for the party! 
+Therefore, given the Party EXP the Dungeon Masster should select a team of enemies with a similar EXP value.<br><br>
+We are trying to reproduce the concept of flow in the game, where the group is challenged to keep the level of attention high 
+but at the same time the challenge must not be insurmountable causing frustration in the player to the point of quitting. <br><br>
+<b>How the tool works:</b><br>
 1. Click the button to generate a random party of adventurers.<br>
 2. For each party member, you can view their stats and abilities by clicking on the class name.<br>
 3. All party members are Level 5.<br>
