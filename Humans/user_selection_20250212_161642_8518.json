@@ -19,5 +19,27 @@
       "None -> 0 EXP"
     ],
     "enemy_exp": 200.0
+  },
+  {
+    "expertise": "Legendary - Godlike storyteller, even Tiamat takes notes",
+    "party": [
+      "Cleric",
+      "Sorcerer",
+      "Cleric",
+      "Fighter",
+      "Barbarian"
+    ],
+    "party_exp": 5500,
+    "enemies": [
+      "None -> 0 EXP",
+      "Young Dragon -> 5900 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP"
+    ],
+    "enemy_exp": 5900.0
   }
 ]
