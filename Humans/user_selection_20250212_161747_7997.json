@@ -23,5 +23,30 @@
       "None -> 0 EXP"
     ],
     "enemy_exp": 700.0
+  },
+  {
+    "expertise": "Amateur - Can handle small encounters, but big foes are scary",
+    "party": [
+      "Wizard",
+      "Warlock",
+      "Paladin",
+      "Bard",
+      "Fighter",
+      "Cleric",
+      "Wizard",
+      "Artificer"
+    ],
+    "party_exp": 8800,
+    "enemies": [
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP",
+      "Swarm of Bats -> 50 EXP",
+      "None -> 0 EXP",
+      "None -> 0 EXP"
+    ],
+    "enemy_exp": 50.0
   }
 ]
