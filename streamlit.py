@@ -5,6 +5,7 @@ import random as rnd
 import os
 import requests
 import base64
+import time
 
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
@@ -292,7 +293,7 @@ if st.session_state.generated_party is not None:
                 st.error(f"❌ Failed to upload data: {response}")
                 print(f"❌ Failed to upload data: {response}")
 
-            st.wait(0.5)
+            time.sleep(0.5)
             # Clear all session state keys except 'counter'
             for key in list(st.session_state.keys()):
                 if key != "counter":
