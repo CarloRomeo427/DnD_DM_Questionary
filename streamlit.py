@@ -266,29 +266,36 @@ if st.session_state.generated_party is not None:
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
     if st.button("✅ Submit Decision"):
-        st.session_state.counter += 1
-        encounter_data = {
-            "expertise": selected_expertise,
-            "party": list(st.session_state.generated_class_names),
-            "party_exp": st.session_state.party_exp,
-            "enemies": selected_enemies,
-            "enemy_exp": enemy_total_exp
-        }
-        new_line = json.dumps(encounter_data)
-
-        status, response = push_to_github(new_line)
-        counter = st.session_state.counter
-
-        if status in (200, 201):
-            st.success("✅ Data successfully uploaded to GitHub!")
-            print("✅ Data successfully uploaded to GitHub!")
+        # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
+        if not any(choice != enemy_options[0] for choice in selected_enemies):
+            st.warning(
+                "Please, to submit you have at least to pick one enemy encounter or, if you do not like the current Party Members, generate a new party by pressing the Generate Encounter button!"
+            )
         else:
-            st.error(f"❌ Failed to upload data: {response}")
-            print(f"❌ Failed to upload data: {response}")
+            st.session_state.counter += 1
+            encounter_data = {
+                "expertise": selected_expertise,
+                "party": list(st.session_state.generated_class_names),
+                "party_exp": st.session_state.party_exp,
+                "enemies": selected_enemies,
+                "enemy_exp": enemy_total_exp
+            }
+            new_line = json.dumps(encounter_data)
 
-        for key in list(st.session_state.keys()):
-            if key != "counter":
-                del st.session_state[key]
+            status, response = push_to_github(new_line)
+            counter = st.session_state.counter
 
-        st.session_state.counter = counter  
-        st.rerun()
+            if status in (200, 201):
+                st.success("✅ Data successfully uploaded to GitHub!")
+                print("✅ Data successfully uploaded to GitHub!")
+            else:
+                st.error(f"❌ Failed to upload data: {response}")
+                print(f"❌ Failed to upload data: {response}")
+
+            # Clear all session state keys except 'counter'
+            for key in list(st.session_state.keys()):
+                if key != "counter":
+                    del st.session_state[key]
+
+            st.session_state.counter = counter  
+            st.rerun()
