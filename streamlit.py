@@ -8,14 +8,14 @@ import base64
 
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
-GITHUB_REPO = "CarloRomeo427/DnDSimulator/"
+GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
 GITHUB_FILE_PATH = "user_selection.json"
 
 def push_to_github(new_line_data):
     """Reads the remote user_selection.json, appends new_line_data, and pushes the update to GitHub."""
     # Use the API endpoint URL
-    url = "https://api.github.com/repos/CarloRomeo427/DnDSimulator/contents/user_selection.json"
+    url = "https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/user_selection.json"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
         "Accept": "application/vnd.github.v3+json",
