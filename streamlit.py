@@ -263,7 +263,7 @@ if st.session_state.generated_party is not None:
             selected_enemies.append(choice)
 
     enemy_total_exp = compute_enemy_exp(selected_enemies)
-    st.write(f"**Enemy Encounter EXP:** {enemy_total_exp}")
+    st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
     if st.button("✅ Submit Decision"):
         st.session_state.counter += 1
