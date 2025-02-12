@@ -15,8 +15,8 @@ GITHUB_BRANCH = "main"
 # Note: The file path is now dynamic (unique per session)
 
 def push_to_github(new_line_data):
-    """Writes new_line_data to a session-specific JSON file with a unique identifier to avoid conflicts.
-       Each new JSON entry is appended as a separate line."""
+    """Writes new_line_data (a JSON object) to a session-specific JSON file stored as an array.
+       The file is formatted with commas between entries and newlines for readability."""
     # Generate a unique file name for this session if it doesn't exist
     if "git_filename" not in st.session_state:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -47,13 +47,24 @@ def push_to_github(new_line_data):
         sha = None
         current_text = ""
     
-    # Append the new encounter data as a new line if file already exists; otherwise, use it as the content
-    # This is where the newline separator is added.
+    # If the file exists, load it as a JSON array; otherwise, start with an empty array.
     if current_text.strip():
-        new_text = current_text.rstrip() + "," + new_line_data
+        try:
+            data_list = json.loads(current_text)
+            if not isinstance(data_list, list):
+                data_list = []
+        except Exception:
+            data_list = []
     else:
-        new_text = new_line_data
+        data_list = []
+
+    # Convert new_line_data (a JSON string) to an object and append it.
+    new_object = json.loads(new_line_data)
+    data_list.append(new_object)
     
+    # Dump the list to a JSON string with indentation for visualization.
+    new_text = json.dumps(data_list, indent=2)
+
     # Encode the new content in Base64
     content_b64 = base64.b64encode(new_text.encode("utf-8")).decode("utf-8")
     
