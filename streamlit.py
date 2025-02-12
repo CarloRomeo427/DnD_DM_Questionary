@@ -6,23 +6,32 @@ import os
 import requests
 import base64
 import time
+import datetime  # New import for timestamp generation
 
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
-GITHUB_FILE_PATH = "user_selection.json"
+# Note: The file path is now dynamic (unique per session)
 
 def push_to_github(new_line_data):
-    """Reads the remote user_selection.json, appends new_line_data, and pushes the update to GitHub."""
-    # Use the API endpoint URL
-    url = "https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/user_selection.json"
+    """Writes new_line_data to a session-specific JSON file with a unique identifier to avoid conflicts."""
+    # Generate a unique file name for this session if it doesn't exist
+    if "git_filename" not in st.session_state:
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        random_int = rnd.randint(1000, 9999)
+        st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
+    
+    file_name = st.session_state.git_filename
+
+    # Use the API endpoint URL with the dynamic file name
+    url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/{file_name}"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
         "Accept": "application/vnd.github.v3+json",
     }
     
-    # Get the current remote file
+    # Attempt to get the current remote file (if it exists)
     get_response = requests.get(url, headers=headers)
     if get_response.status_code == 200:
         remote_data = get_response.json()
@@ -36,7 +45,7 @@ def push_to_github(new_line_data):
         sha = None
         current_text = ""
     
-    # Append the new encounter data as a new line
+    # Append the new encounter data as a new line if file already exists; otherwise, use it as the content
     if current_text.strip():
         new_text = current_text.rstrip() + "\n" + new_line_data
     else:
@@ -47,14 +56,14 @@ def push_to_github(new_line_data):
     
     # Prepare the payload
     data = {
-        "message": "Updating user selection JSON",
+        "message": f"Updating session file {file_name} with new encounter data",
         "content": content_b64,
         "branch": GITHUB_BRANCH,
     }
     if sha:
         data["sha"] = sha
 
-    # Update the file on GitHub
+    # Update (or create) the file on GitHub
     put_response = requests.put(url, headers=headers, json=data)
     return put_response.status_code, put_response.json()
 
@@ -192,7 +201,7 @@ st.markdown("""
 <b>Welcome to the D&D Encounter Generator!</b><br>
 This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!<br><br>
 A balanced encounter should be challenging but not deadly for the party! 
-Therefore, given the Party EXP the Dungeon Masster should select a team of enemies with a similar EXP value.<br><br>
+Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.<br><br>
 We are trying to reproduce the concept of flow in the game, where the group is challenged to keep the level of attention high 
 but at the same time the challenge must not be insurmountable causing frustration in the player to the point of quitting. <br><br>
 <b>How the tool works:</b><br>
@@ -227,7 +236,6 @@ with col_gen:
 with col_counter:
     st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter,)
     
-
 if st.session_state.generated_party is not None:
     st.subheader(f"Party EXP: {st.session_state.party_exp}")
 
@@ -294,10 +302,9 @@ if st.session_state.generated_party is not None:
                 print(f"❌ Failed to upload data: {response}")
 
             time.sleep(0.45)
-            # Clear all session state keys except 'counter'
+            # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
             for key in list(st.session_state.keys()):
-                if key != "counter":
+                if key not in ["counter", "git_filename"]:
                     del st.session_state[key]
-
             st.session_state.counter = counter  
             st.rerun()
