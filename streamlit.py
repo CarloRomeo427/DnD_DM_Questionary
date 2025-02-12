@@ -15,16 +15,18 @@ GITHUB_BRANCH = "main"
 # Note: The file path is now dynamic (unique per session)
 
 def push_to_github(new_line_data):
-    """Writes new_line_data to a session-specific JSON file with a unique identifier to avoid conflicts."""
+    """Writes new_line_data to a session-specific JSON file with a unique identifier to avoid conflicts.
+       Each new JSON entry is appended as a separate line."""
     # Generate a unique file name for this session if it doesn't exist
     if "git_filename" not in st.session_state:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         random_int = rnd.randint(1000, 9999)
+        # Save to the Humans folder with a unique file name
         st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
     
     file_name = st.session_state.git_filename
 
-    # Use the API endpoint URL with the dynamic file name
+    # Use the API endpoint URL with the dynamic file name in the Humans folder
     url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/Humans/{file_name}"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
@@ -46,8 +48,9 @@ def push_to_github(new_line_data):
         current_text = ""
     
     # Append the new encounter data as a new line if file already exists; otherwise, use it as the content
+    # This is where the newline separator is added.
     if current_text.strip():
-        new_text = current_text.rstrip() + "\n" + new_line_data
+        new_text = current_text.rstrip() + "," + new_line_data
     else:
         new_text = new_line_data
     
