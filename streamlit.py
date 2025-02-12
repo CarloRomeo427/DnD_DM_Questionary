@@ -224,7 +224,7 @@ col_gen, col_counter = st.columns([3, 1])
 with col_gen:  
     st.button("🎲 Generate Encounter", on_click=generate_encounter)
 with col_counter:
-    st.metric(label="YOUR SUBMISSION!!!", value=st.session_state.counter,)
+    st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter,)
     
 
 if st.session_state.generated_party is not None:
