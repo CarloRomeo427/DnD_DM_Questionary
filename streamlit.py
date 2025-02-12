@@ -292,7 +292,7 @@ if st.session_state.generated_party is not None:
                 st.error(f"❌ Failed to upload data: {response}")
                 print(f"❌ Failed to upload data: {response}")
 
-            st.wait(2)
+            st.wait(0.5)
             # Clear all session state keys except 'counter'
             for key in list(st.session_state.keys()):
                 if key != "counter":
