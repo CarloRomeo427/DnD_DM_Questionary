@@ -25,7 +25,7 @@ def push_to_github(new_line_data):
     file_name = st.session_state.git_filename
 
     # Use the API endpoint URL with the dynamic file name
-    url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/{file_name}"
+    url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/Humans/{file_name}"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
         "Accept": "application/vnd.github.v3+json",
@@ -301,7 +301,6 @@ if st.session_state.generated_party is not None:
                 st.error(f"❌ Failed to upload data: {response}")
                 print(f"❌ Failed to upload data: {response}")
 
-            time.sleep(0.45)
             # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
             for key in list(st.session_state.keys()):
                 if key not in ["counter", "git_filename"]:
