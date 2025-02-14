@@ -10,6 +10,8 @@ import datetime  # For timestamp generation
 
 from simulate import benchmark
 
+from streamlit_modal import Modal
+
 # --------------------- GITHUB CONFIGURATION ---------------------
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
@@ -355,7 +357,7 @@ if st.session_state.get("generated_party") is not None:
 
                 # Display the simulation summary in a fullscreen modal popup.
                 # (st.modal is available in recent versions of Streamlit.)
-                with st.modal("Simulation Summary", key="simulation_modal", fullscreen=True):
+                with Modal("Simulation Summary", key="simulation_modal"):
                     st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
                     st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
                     st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
