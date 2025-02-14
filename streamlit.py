@@ -323,10 +323,22 @@ if st.session_state.generated_party is not None:
             else:
                 st.error(f"❌ Failed to upload data: {response}")
 
-            # If 5 encounters have been submitted, run simulations
-            if st.session_state.counter == 5:
+            # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
+            if st.session_state.counter < 5:
+                # Clear the current party so that a new one is generated on the next run.
+                if "generated_party" in st.session_state:
+                    del st.session_state.generated_party
+                if "generated_class_names" in st.session_state:
+                    del st.session_state.generated_class_names
+                st.session_state.party_exp = 0
+                # Clear enemy selection keys so the selectboxes reset to default.
+                for i in range(1, 9):
+                    if f"enemy_{i}" in st.session_state:
+                        del st.session_state[f"enemy_{i}"]
+                st.experimental_rerun()
+            # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
+            else:
                 st.info("5 encounters submitted. Running simulations for all encounters…")
-
                 simulation_results = []
                 # For each encounter, run the simulation benchmark
                 for encounter in st.session_state.session_encounters:
@@ -346,7 +358,6 @@ if st.session_state.generated_party is not None:
                         "death_num": death_num,
                         "team_health": team_health
                     })
-
                 # Calculate averaged results over the 5 encounters
                 avg_win_prob    = np.mean([res["win_prob"] for res in simulation_results])
                 avg_rounds_num  = np.mean([res["rounds_num"] for res in simulation_results])
@@ -354,19 +365,15 @@ if st.session_state.generated_party is not None:
                 avg_death_num   = np.mean([res["death_num"] for res in simulation_results])
                 avg_team_health = np.mean([res["team_health"] for res in simulation_results])
 
-                # Display the simulation summary in an expander (fancy popup)
-                with st.expander("🧪 Simulation Summary (Click to View)", expanded=True):
+                # Display the simulation summary in a fullscreen modal popup.
+                # (st.modal is available in recent versions of Streamlit.)
+                with st.modal("Simulation Summary", key="simulation_modal", fullscreen=True):
                     st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
                     st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
                     st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
                     st.write(f"**Average Player Damage:** {avg_dmg_player:.2f}")
                     st.write(f"**Average Deaths:** {avg_death_num:.2f}")
                     st.write(f"**Average Team Health:** {avg_team_health:.2f}")
-
-                # Provide a button to fully reset the session (creating a new session and JSON file)
-                if st.button("🔄 Reset Session"):
-                    st.session_state.clear()
-                    st.experimental_rerun()
-            else:
-                st.info(f"{st.session_state.counter} encounter(s) submitted. Submit {5 - st.session_state.counter} more to run simulations.")
-
+                    if st.button("🔄 Reset Session"):
+                        st.session_state.clear()
+                        st.experimental_rerun()
