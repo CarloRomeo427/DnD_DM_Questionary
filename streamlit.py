@@ -365,17 +365,19 @@ if st.session_state.get("generated_party") is not None:
                     st.write(f"**Average Player Damage:** {avg_dmg_player:.2f}")
                     st.write(f"**Average Deaths:** {avg_death_num:.2f}")
                     st.write(f"**Average Team Health:** {avg_team_health:.2f}")
-                    if st.button("🔄 Reset Session"):
-                        st.session_state.clear()
-                        st.rerun()
                     
-                    if st.button("Reset Session"):
+                    if st.button("🔄 Reset Session"):
                         # Clear all session state
                         for key in list(st.session_state.keys()):
                             del st.session_state[key]
                         st.rerun()
 
                 fullscreen_popup()
+                if 'show_popup' not in st.session_state:
+                    st.session_state.show_popup = True
+
+                if st.session_state.show_popup:
+                    fullscreen_popup()
                 # with Modal("Simulation Summary", key="simulation_modal"):
                     # st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
                     # st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
