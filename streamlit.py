@@ -10,7 +10,6 @@ import datetime  # For timestamp generation
 
 from simulate import benchmark
 
-from streamlit_modal import Modal
 
 # --------------------- GITHUB CONFIGURATION ---------------------
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
@@ -204,6 +203,11 @@ def calculate_party_exp(party, difficulty="hard"):
     EXP_THRESHOLDS = {"easy": 500, "medium": 750, "hard": 1100, "deadly": 2200}
     return EXP_THRESHOLDS[difficulty] * len(party)
 
+if 'buttons_disabled' not in st.session_state:
+    st.session_state.buttons_disabled = False
+
+def toggle_buttons():
+    st.session_state.buttons_disabled = not st.session_state.buttons_disabled
 # --------------------- STREAMLIT UI ---------------------
 st.title("🧙 D&D Encounter Generator")
 
@@ -242,7 +246,7 @@ st.markdown("---")
 # Encounter generation button and submissions counter
 col_gen, col_counter = st.columns([3, 1])
 with col_gen:  
-    st.button("🎲 Generate Encounter", on_click=generate_encounter)
+    st.button("🎲 Generate Encounter", on_click=generate_encounter, disabled=st.session_state.buttons_disabled)
 with col_counter:
     st.metric(label="YOUR SUBMISSIONS", value=st.session_state.counter)
 
@@ -290,7 +294,7 @@ if st.session_state.get("generated_party") is not None:
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
     # --------------------- SUBMIT ENCOUNTER ---------------------
-    if st.button("✅ Submit Decision"):
+    if st.button("✅ Submit Decision", disabled=st.session_state.buttons_disabled):
         # Ensure at least one enemy (other than the default) is selected
         if not any(choice != enemy_options[0] for choice in selected_enemies):
             st.warning("Please select at least one enemy (or generate a new party) before submitting!")
@@ -375,10 +379,7 @@ if st.session_state.get("generated_party") is not None:
                 fullscreen_popup()
                 if 'show_popup' not in st.session_state:
                     st.session_state.show_popup = True
+                    toggle_buttons()
 
-                time.wait(20)
-                if st.session_state.show_popup:
-                    for key in list(st.session_state.keys()):
-                        del st.session_state[key]
-                    st.rerun()
+                
                 
