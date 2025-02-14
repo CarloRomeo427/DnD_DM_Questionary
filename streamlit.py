@@ -10,40 +10,69 @@ import datetime  # For timestamp generation
 
 from simulate import benchmark
 
+
 # --------------------- GITHUB CONFIGURATION ---------------------
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
-GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary"  # Removed trailing slash for URL consistency
+GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
 
 def push_to_github(new_line_data):
-    """
-    Push encounter data as a new JSON file to GitHub.
-    IMPORTANT: This function ALWAYS creates a new file (with a unique filename)
-    so that any JSON file already pushed (from a previous submission) remains untouched.
-    """
-    # Always generate a new file name to avoid updating an existing file
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    random_int = rnd.randint(1000, 9999)
-    file_name = f"user_selection_{timestamp}_{random_int}.json"
+    """Writes new_line_data (a JSON object) to a session-specific JSON file stored as an array."""
+    # Generate a unique file name for this session if it doesn't exist
+    if "git_filename" not in st.session_state:
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        random_int = rnd.randint(1000, 9999)
+        st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
     
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/Humans/{file_name}"
+    file_name = st.session_state.git_filename
+    url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/Humans/{file_name}"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
         "Accept": "application/vnd.github.v3+json",
     }
     
-    # Prepare the file content as an array containing the encounter object
+    # Attempt to get the current remote file (if it exists)
+    get_response = requests.get(url, headers=headers)
+    if get_response.status_code == 200:
+        remote_data = get_response.json()
+        sha = remote_data.get("sha")
+        encoded_content = remote_data.get("content", "")
+        if encoded_content:
+            current_text = base64.b64decode(encoded_content).decode("utf-8")
+        else:
+            current_text = ""
+    else:
+        sha = None
+        current_text = ""
+    
+    # Load current content as JSON array if exists; otherwise, start with an empty list.
+    if current_text.strip():
+        try:
+            data_list = json.loads(current_text)
+            if not isinstance(data_list, list):
+                data_list = []
+        except Exception:
+            data_list = []
+    else:
+        data_list = []
+
+    # Append the new encounter data (assumed to be a JSON string)
     new_object = json.loads(new_line_data)
-    data_list = [new_object]
+    data_list.append(new_object)
+    
+    # Dump the list to a JSON string with indentation
     new_text = json.dumps(data_list, indent=2)
     content_b64 = base64.b64encode(new_text.encode("utf-8")).decode("utf-8")
     
+    # Prepare the payload
     data = {
-        "message": f"Adding encounter data in file {file_name}",
+        "message": f"Updating session file {file_name} with new encounter data",
         "content": content_b64,
         "branch": GITHUB_BRANCH,
     }
-    
+    if sha:
+        data["sha"] = sha
+
     put_response = requests.put(url, headers=headers, json=data)
     return put_response.status_code, put_response.json()
 
@@ -59,6 +88,7 @@ precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 
 # --------------------- INITIALIZE SESSION STATE ---------------------
+# Use setdefault to ensure all keys are created if they don't exist.
 st.session_state.setdefault("counter", 0)
 st.session_state.setdefault("party_indices", party_indices)
 st.session_state.setdefault("precomputed_parties", precomputed_parties)
@@ -67,12 +97,7 @@ st.session_state.setdefault("generated_party", None)
 st.session_state.setdefault("generated_class_names", None)
 st.session_state.setdefault("party_exp", 0)
 st.session_state.setdefault("session_encounters", [])
-st.session_state.setdefault("buttons_disabled", False)
-
-def reset_session():
-    """Clears the session state and reruns the app (GitHub files remain intact)."""
-    st.session_state.clear()
-    st.rerun()
+st.session_state.setdefault("git_filename", f"user_selection_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}_{rnd.randint(1000, 9999)}")
 
 # --------------------- ENCOUNTER GENERATION FUNCTIONS ---------------------
 def get_next_party_matrix():
@@ -178,6 +203,11 @@ def calculate_party_exp(party, difficulty="hard"):
     EXP_THRESHOLDS = {"easy": 500, "medium": 750, "hard": 1100, "deadly": 2200}
     return EXP_THRESHOLDS[difficulty] * len(party)
 
+if 'buttons_disabled' not in st.session_state:
+    st.session_state.buttons_disabled = False
+
+def toggle_buttons():
+    st.session_state.buttons_disabled = not st.session_state.buttons_disabled
 # --------------------- STREAMLIT UI ---------------------
 st.title("🧙 D&D Encounter Generator")
 
@@ -263,95 +293,98 @@ if st.session_state.get("generated_party") is not None:
     enemy_total_exp = compute_enemy_exp(selected_enemies)
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
-    # --------------------- SUBMIT AND RESET BUTTONS ---------------------
-    # Two buttons appear side-by-side: one for submission and one for resetting the session.
-    col_buttons = st.columns(2)
-    with col_buttons[0]:
-        submit_clicked = st.button("✅ Submit Decision", disabled=st.session_state.buttons_disabled)
-    with col_buttons[1]:
-        reset_clicked = st.button("🔄 Reset Session", disabled=st.session_state.buttons_disabled)
-
-    if reset_clicked:
-        reset_session()
-
-    if submit_clicked:
-        # Ensure at least one enemy (other than the default) is selected
-        if not any(choice != enemy_options[0] for choice in selected_enemies):
-            st.warning("Please select at least one enemy (or generate a new party) before submitting!")
-        else:
-            # Build the encounter data dictionary
-            encounter_data = {
-                "expertise": selected_expertise,
-                "party": list(st.session_state.generated_class_names),
-                "party_exp": st.session_state.party_exp,
-                "enemies": selected_enemies,
-                "enemy_exp": enemy_total_exp
-            }
-            # Append this encounter to the session list (to accumulate encounters)
-            st.session_state.session_encounters.append(encounter_data)
-            st.session_state.counter += 1
-
-            # Push the current encounter data to GitHub (each push creates a new file)
-            new_line = json.dumps(encounter_data)
-            status, response = push_to_github(new_line)
-            if status in (200, 201):
-                st.success("✅ Data successfully uploaded to GitHub!")
+    # --------------------- SUBMIT ENCOUNTER ---------------------
+    col_butt = st.columns(2)
+    with col_butt[1]:
+        if st.button("🔄 Reset Encounter", on_click=st.rerun):
+            pass
+    with col_butt[0]:
+        if st.button("✅ Submit Decision", disabled=st.session_state.buttons_disabled):
+            # Ensure at least one enemy (other than the default) is selected
+            if not any(choice != enemy_options[0] for choice in selected_enemies):
+                st.warning("Please select at least one enemy (or generate a new party) before submitting!")
             else:
-                st.error(f"❌ Failed to upload data: {response}")
+                # Build the encounter data dictionary
+                encounter_data = {
+                    "expertise": selected_expertise,
+                    "party": list(st.session_state.generated_class_names),
+                    "party_exp": st.session_state.party_exp,
+                    "enemies": selected_enemies,
+                    "enemy_exp": enemy_total_exp
+                }
+                # Append this encounter to the session list (to accumulate 5 encounters)
+                st.session_state.session_encounters.append(encounter_data)
+                st.session_state.counter += 1
 
-            # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-            if st.session_state.counter < 5:
-                st.session_state.generated_party = None
-                st.session_state.generated_class_names = None
-                st.session_state.party_exp = 0
-                # Clear enemy selection keys so the selectboxes reset to default.
-                for i in range(1, 9):
-                    if f"enemy_{i}" in st.session_state:
-                        del st.session_state[f"enemy_{i}"]
-                st.rerun()
-            else:
-                st.info("5 encounters submitted. Running simulations for all encounters…")
-                simulation_results = []
-                # For each encounter, run the simulation benchmark
-                for encounter in st.session_state.session_encounters:
-                    party = encounter["party"]
-                    # Process enemy selections: remove the default option
-                    enemy_names = [
-                        enemy.split("->")[0].strip()
-                        for enemy in encounter["enemies"]
-                        if enemy != enemy_options[0]
-                    ]
-                    # Run the simulation
-                    win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
-                    simulation_results.append({
-                        "win_prob": win_prob,
-                        "rounds_num": rounds_num,
-                        "dmg_player": dmg_player,
-                        "death_num": death_num,
-                        "team_health": team_health
-                    })
-                # Calculate averaged results over the 5 encounters
-                avg_win_prob    = np.mean([res["win_prob"] for res in simulation_results])
-                avg_rounds_num  = np.mean([res["rounds_num"] for res in simulation_results])
-                avg_dmg_player  = np.mean([res["dmg_player"] for res in simulation_results])
-                avg_death_num   = np.mean([res["death_num"] for res in simulation_results])
-                avg_team_health = np.mean([res["team_health"] for res in simulation_results])
+                # Push the current encounter data to GitHub
+                new_line = json.dumps(encounter_data)
+                status, response = push_to_github(new_line)
+                if status in (200, 201):
+                    st.success("✅ Data successfully uploaded to GitHub!")
+                else:
+                    st.error(f"❌ Failed to upload data: {response}")
 
-                # Display the simulation summary in a fullscreen modal popup.
-                @st.dialog("Fullscreen Popup", width="large")
-                def fullscreen_popup():
-                    st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
-                    st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
-                    st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
-                    st.write(f"**Average Player Damage:** {avg_dmg_player:.2f}")
-                    st.write(f"**Average Deaths:** {avg_death_num:.2f}")
-                    st.write(f"**Average Team Health:** {avg_team_health:.2f}")
+                # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
+                if st.session_state.counter < 1:
+                    # Clear the current party so that a new one is generated on the next run.
+                    st.session_state.generated_party = None
+                    st.session_state.generated_class_names = None
+                    st.session_state.party_exp = 0
+                    # Clear enemy selection keys so the selectboxes reset to default.
+                    for i in range(1, 9):
+                        if f"enemy_{i}" in st.session_state:
+                            del st.session_state[f"enemy_{i}"]
+                    st.rerun()
+                # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
+                else:
+                    st.info("5 encounters submitted. Running simulations for all encounters…")
+                    simulation_results = []
+                    # For each encounter, run the simulation benchmark
+                    for encounter in st.session_state.session_encounters:
+                        party = encounter["party"]
+                        # Process enemy selections: remove the default option
+                        enemy_names = [
+                            enemy.split("->")[0].strip()
+                            for enemy in encounter["enemies"]
+                            if enemy != enemy_options[0]
+                        ]
+                        # Run the simulation
+                        win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
+                        simulation_results.append({
+                            "win_prob": win_prob,
+                            "rounds_num": rounds_num,
+                            "dmg_player": dmg_player,
+                            "death_num": death_num,
+                            "team_health": team_health
+                        })
+                    # Calculate averaged results over the 5 encounters
+                    avg_win_prob    = np.mean([res["win_prob"] for res in simulation_results])
+                    avg_rounds_num  = np.mean([res["rounds_num"] for res in simulation_results])
+                    avg_dmg_player  = np.mean([res["dmg_player"] for res in simulation_results])
+                    avg_death_num   = np.mean([res["death_num"] for res in simulation_results])
+                    avg_team_health = np.mean([res["team_health"] for res in simulation_results])
+
+                    # Display the simulation summary in a fullscreen modal popup.
+                    # (st.modal is available in recent versions of Streamlit.)
+                    @st.dialog("Fullscreen Popup", width="large")
+                    def fullscreen_popup():
+                        st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
+                        st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
+                        st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
+                        st.write(f"**Average Player Damage:** {avg_dmg_player:.2f}")
+                        st.write(f"**Average Deaths:** {avg_death_num:.2f}")
+                        st.write(f"**Average Team Health:** {avg_team_health:.2f}")
+                        
+                        if st.button("🔄 Reset Session"):
+                            # Clear all session state
+                            for key in list(st.session_state.keys()):
+                                del st.session_state[key]
+                            st.rerun()
+
+                    fullscreen_popup()
+                    if 'show_popup' not in st.session_state:
+                        st.session_state.show_popup = True
+                        toggle_buttons()
+
                     
-                    if st.button("🔄 Reset Session"):
-                        reset_session()
-
-                fullscreen_popup()
-                # Optionally disable further button presses after simulation
-                if 'show_popup' not in st.session_state:
-                    st.session_state.show_popup = True
-                    st.session_state.buttons_disabled = True
+                    
