@@ -10,8 +10,6 @@ import datetime  # For timestamp generation
 
 from simulate import benchmark
 
-from streamlit_modal import Modal
-
 # --------------------- GITHUB CONFIGURATION ---------------------
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
@@ -316,8 +314,7 @@ if st.session_state.get("generated_party") is not None:
                 st.error(f"❌ Failed to upload data: {response}")
 
             # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-            if st.session_state.counter < 1:
-                # Clear the current party so that a new one is generated on the next run.
+            if st.session_state.counter < 5:
                 st.session_state.generated_party = None
                 st.session_state.generated_class_names = None
                 st.session_state.party_exp = 0
@@ -325,7 +322,7 @@ if st.session_state.get("generated_party") is not None:
                 for i in range(1, 9):
                     if f"enemy_{i}" in st.session_state:
                         del st.session_state[f"enemy_{i}"]
-                st.rerun()
+                st.experimental_rerun()
             # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
             else:
                 st.info("5 encounters submitted. Running simulations for all encounters…")
@@ -354,9 +351,8 @@ if st.session_state.get("generated_party") is not None:
                 avg_dmg_player  = np.mean([res["dmg_player"] for res in simulation_results])
                 avg_death_num   = np.mean([res["death_num"] for res in simulation_results])
                 avg_team_health = np.mean([res["team_health"] for res in simulation_results])
-
+                
                 # Display the simulation summary in a fullscreen modal popup.
-                # (st.modal is available in recent versions of Streamlit.)
                 @st.dialog("Fullscreen Popup", width="large")
                 def fullscreen_popup():
                     st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
@@ -367,24 +363,7 @@ if st.session_state.get("generated_party") is not None:
                     st.write(f"**Average Team Health:** {avg_team_health:.2f}")
                     
                     if st.button("🔄 Reset Session"):
-                        # Clear all session state
-                        for key in list(st.session_state.keys()):
-                            del st.session_state[key]
-                        st.rerun()
-
+                        st.session_state.clear()
+                        st.experimental_rerun()
+                
                 fullscreen_popup()
-                if 'show_popup' not in st.session_state:
-                    st.session_state.show_popup = True
-
-                if st.session_state.show_popup:
-                    fullscreen_popup()
-                # with Modal("Simulation Summary", key="simulation_modal"):
-                    # st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
-                    # st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
-                    # st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
-                    # st.write(f"**Average Player Damage:** {avg_dmg_player:.2f}")
-                    # st.write(f"**Average Deaths:** {avg_death_num:.2f}")
-                    # st.write(f"**Average Team Health:** {avg_team_health:.2f}")
-                    # if st.button("🔄 Reset Session"):
-                    #     st.session_state.clear()
-                    #     st.rerun()
