@@ -72,7 +72,7 @@ st.session_state.setdefault("buttons_disabled", False)
 def reset_session():
     """Clears the session state and reruns the app (GitHub files remain intact)."""
     st.session_state.clear()
-    st.experimental_rerun()
+    st.rerun()
 
 # --------------------- ENCOUNTER GENERATION FUNCTIONS ---------------------
 def get_next_party_matrix():
@@ -308,7 +308,7 @@ if st.session_state.get("generated_party") is not None:
                 for i in range(1, 9):
                     if f"enemy_{i}" in st.session_state:
                         del st.session_state[f"enemy_{i}"]
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.info("5 encounters submitted. Running simulations for all encounters…")
                 simulation_results = []
