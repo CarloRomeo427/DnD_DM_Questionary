@@ -376,4 +376,4 @@ if st.session_state.generated_party is not None:
                     st.write(f"**Average Team Health:** {avg_team_health:.2f}")
                     if st.button("🔄 Reset Session"):
                         st.session_state.clear()
-                        st.experimental_rerun()
+                        st.rerun()
