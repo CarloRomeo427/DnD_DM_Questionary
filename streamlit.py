@@ -87,26 +87,16 @@ precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 
 # --------------------- INITIALIZE SESSION STATE ---------------------
-if "counter" not in st.session_state:
-    st.session_state.counter = 0
-
-if "party_indices" not in st.session_state:
-    st.session_state.party_indices = party_indices
-    st.session_state.precomputed_parties = precomputed_parties
-    st.session_state.precomputed_class_names = precomputed_class_names
-    st.session_state.generated_party = None
-    st.session_state.generated_class_names = None
-    st.session_state.party_exp = 0
-
-# To store encounter submissions for the current session (5 encounters per session)
-if "session_encounters" not in st.session_state:
-    st.session_state.session_encounters = []
-
-# Ensure a session-specific GitHub file name is set
-if "git_filename" not in st.session_state:
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    random_int = rnd.randint(1000, 9999)
-    st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
+# Use setdefault to ensure all keys are created if they don't exist.
+st.session_state.setdefault("counter", 0)
+st.session_state.setdefault("party_indices", party_indices)
+st.session_state.setdefault("precomputed_parties", precomputed_parties)
+st.session_state.setdefault("precomputed_class_names", precomputed_class_names)
+st.session_state.setdefault("generated_party", None)
+st.session_state.setdefault("generated_class_names", None)
+st.session_state.setdefault("party_exp", 0)
+st.session_state.setdefault("session_encounters", [])
+st.session_state.setdefault("git_filename", f"user_selection_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}_{rnd.randint(1000, 9999)}")
 
 # --------------------- ENCOUNTER GENERATION FUNCTIONS ---------------------
 def get_next_party_matrix():
@@ -255,7 +245,7 @@ with col_counter:
     st.metric(label="YOUR SUBMISSIONS", value=st.session_state.counter)
 
 # If an encounter has been generated, display party details and enemy selection
-if st.session_state.generated_party is not None:
+if st.session_state.get("generated_party") is not None:
     st.subheader(f"Party EXP: {st.session_state.party_exp}")
 
     # Display party members in two columns
@@ -326,10 +316,8 @@ if st.session_state.generated_party is not None:
             # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
             if st.session_state.counter < 5:
                 # Clear the current party so that a new one is generated on the next run.
-                if "generated_party" in st.session_state:
-                    del st.session_state.generated_party
-                if "generated_class_names" in st.session_state:
-                    del st.session_state.generated_class_names
+                st.session_state.generated_party = None
+                st.session_state.generated_class_names = None
                 st.session_state.party_exp = 0
                 # Clear enemy selection keys so the selectboxes reset to default.
                 for i in range(1, 9):
