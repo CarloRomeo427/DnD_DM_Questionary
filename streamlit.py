@@ -383,11 +383,11 @@ if st.session_state.get("generated_party") is not None:
                                 del st.session_state[key]
                             st.rerun()
 
-                    fullscreen_popup()
                     if 'show_popup' not in st.session_state:
                         st.session_state.show_popup = True
                         toggle_buttons()
                         st.rerun()
 
+                    fullscreen_popup()
                     
                     
