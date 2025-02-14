@@ -316,7 +316,7 @@ if st.session_state.get("generated_party") is not None:
                 st.error(f"❌ Failed to upload data: {response}")
 
             # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-            if st.session_state.counter < 5:
+            if st.session_state.counter < 1:
                 # Clear the current party so that a new one is generated on the next run.
                 st.session_state.generated_party = None
                 st.session_state.generated_class_names = None
@@ -357,7 +357,8 @@ if st.session_state.get("generated_party") is not None:
 
                 # Display the simulation summary in a fullscreen modal popup.
                 # (st.modal is available in recent versions of Streamlit.)
-                with Modal("Simulation Summary", key="simulation_modal"):
+                @st.dialog("Fullscreen Popup", width="large")
+                def fullscreen_popup():
                     st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
                     st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
                     st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
@@ -367,3 +368,21 @@ if st.session_state.get("generated_party") is not None:
                     if st.button("🔄 Reset Session"):
                         st.session_state.clear()
                         st.rerun()
+                    
+                    if st.button("Reset Session"):
+                        # Clear all session state
+                        for key in list(st.session_state.keys()):
+                            del st.session_state[key]
+                        st.rerun()
+
+                fullscreen_popup()
+                # with Modal("Simulation Summary", key="simulation_modal"):
+                    # st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
+                    # st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
+                    # st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
+                    # st.write(f"**Average Player Damage:** {avg_dmg_player:.2f}")
+                    # st.write(f"**Average Deaths:** {avg_death_num:.2f}")
+                    # st.write(f"**Average Team Health:** {avg_team_health:.2f}")
+                    # if st.button("🔄 Reset Session"):
+                    #     st.session_state.clear()
+                    #     st.rerun()
