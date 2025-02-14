@@ -376,6 +376,7 @@ if st.session_state.get("generated_party") is not None:
                 if 'show_popup' not in st.session_state:
                     st.session_state.show_popup = True
 
+                time.wait(20)
                 if st.session_state.show_popup:
                     for key in list(st.session_state.keys()):
                         del st.session_state[key]
