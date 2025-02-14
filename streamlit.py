@@ -322,7 +322,7 @@ if st.session_state.get("generated_party") is not None:
                 for i in range(1, 9):
                     if f"enemy_{i}" in st.session_state:
                         del st.session_state[f"enemy_{i}"]
-                st.experimental_rerun()
+                st.rerun()
             # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
             else:
                 st.info("5 encounters submitted. Running simulations for all encounters…")
@@ -364,6 +364,6 @@ if st.session_state.get("generated_party") is not None:
                     
                     if st.button("🔄 Reset Session"):
                         st.session_state.clear()
-                        st.experimental_rerun()
+                        st.rerun()
                 
                 fullscreen_popup()
