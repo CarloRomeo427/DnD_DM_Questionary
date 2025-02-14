@@ -377,8 +377,7 @@ if st.session_state.get("generated_party") is not None:
                     st.session_state.show_popup = True
 
                 if st.session_state.show_popup:
-                    # fullscreen_popup()
-                    st.rerun()
+                    fullscreen_popup()
                 # with Modal("Simulation Summary", key="simulation_modal"):
                     # st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
                     # st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
