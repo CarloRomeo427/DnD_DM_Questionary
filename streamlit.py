@@ -6,27 +6,24 @@ import os
 import requests
 import base64
 import time
-import datetime  # New import for timestamp generation
+import datetime  # For timestamp generation
 
-# GitHub Configuration
+from simulate import benchmark
+
+# --------------------- GITHUB CONFIGURATION ---------------------
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
-# Note: The file path is now dynamic (unique per session)
 
 def push_to_github(new_line_data):
-    """Writes new_line_data (a JSON object) to a session-specific JSON file stored as an array.
-       The file is formatted with commas between entries and newlines for readability."""
+    """Writes new_line_data (a JSON object) to a session-specific JSON file stored as an array."""
     # Generate a unique file name for this session if it doesn't exist
     if "git_filename" not in st.session_state:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         random_int = rnd.randint(1000, 9999)
-        # Save to the Humans folder with a unique file name
         st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
     
     file_name = st.session_state.git_filename
-
-    # Use the API endpoint URL with the dynamic file name in the Humans folder
     url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/Humans/{file_name}"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
@@ -47,7 +44,7 @@ def push_to_github(new_line_data):
         sha = None
         current_text = ""
     
-    # If the file exists, load it as a JSON array; otherwise, start with an empty array.
+    # Load current content as JSON array if exists; otherwise, start with an empty list.
     if current_text.strip():
         try:
             data_list = json.loads(current_text)
@@ -58,14 +55,12 @@ def push_to_github(new_line_data):
     else:
         data_list = []
 
-    # Convert new_line_data (a JSON string) to an object and append it.
+    # Append the new encounter data (assumed to be a JSON string)
     new_object = json.loads(new_line_data)
     data_list.append(new_object)
     
-    # Dump the list to a JSON string with indentation for visualization.
+    # Dump the list to a JSON string with indentation
     new_text = json.dumps(data_list, indent=2)
-
-    # Encode the new content in Base64
     content_b64 = base64.b64encode(new_text.encode("utf-8")).decode("utf-8")
     
     # Prepare the payload
@@ -77,7 +72,6 @@ def push_to_github(new_line_data):
     if sha:
         data["sha"] = sha
 
-    # Update (or create) the file on GitHub
     put_response = requests.put(url, headers=headers, json=data)
     return put_response.status_code, put_response.json()
 
@@ -92,6 +86,7 @@ precomputed_parties = data["matrices"]
 precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 
+# --------------------- INITIALIZE SESSION STATE ---------------------
 if "counter" not in st.session_state:
     st.session_state.counter = 0
 
@@ -103,7 +98,17 @@ if "party_indices" not in st.session_state:
     st.session_state.generated_class_names = None
     st.session_state.party_exp = 0
 
-# --------------------- FUNCTIONS ---------------------
+# To store encounter submissions for the current session (5 encounters per session)
+if "session_encounters" not in st.session_state:
+    st.session_state.session_encounters = []
+
+# Ensure a session-specific GitHub file name is set
+if "git_filename" not in st.session_state:
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    random_int = rnd.randint(1000, 9999)
+    st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
+
+# --------------------- ENCOUNTER GENERATION FUNCTIONS ---------------------
 def get_next_party_matrix():
     idx = rnd.choice(st.session_state.party_indices)
     return st.session_state.precomputed_parties[idx], st.session_state.precomputed_class_names[idx]
@@ -207,7 +212,7 @@ def calculate_party_exp(party, difficulty="hard"):
     EXP_THRESHOLDS = {"easy": 500, "medium": 750, "hard": 1100, "deadly": 2200}
     return EXP_THRESHOLDS[difficulty] * len(party)
 
-# --------------------- UI ELEMENTS ---------------------
+# --------------------- STREAMLIT UI ---------------------
 st.title("🧙 D&D Encounter Generator")
 
 st.markdown("""
@@ -230,7 +235,7 @@ but at the same time the challenge must not be insurmountable causing frustratio
 </div>
 """, unsafe_allow_html=True)
 
-# --------------------- DM EXPERTISE SELECTION ---------------------
+# DM Expertise selection
 expertise_levels = [
     "Noob - Still learning what a d20 is",
     "Amateur - Can handle small encounters, but big foes are scary",
@@ -238,18 +243,18 @@ expertise_levels = [
     "Expert - NPC voices so good, players forget it's you",
     "Legendary - Godlike storyteller, even Tiamat takes notes"
 ]
-
 st.subheader("Expertise as DM")
 selected_expertise = st.selectbox("Choose your expertise level:", expertise_levels)
 st.markdown("---")
 
-# --------------------- ENCOUNTER GENERATION ---------------------
+# Encounter generation button and submissions counter
 col_gen, col_counter = st.columns([3, 1])
 with col_gen:  
     st.button("🎲 Generate Encounter", on_click=generate_encounter)
 with col_counter:
-    st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter,)
-    
+    st.metric(label="YOUR SUBMISSIONS", value=st.session_state.counter)
+
+# If an encounter has been generated, display party details and enemy selection
 if st.session_state.generated_party is not None:
     st.subheader(f"Party EXP: {st.session_state.party_exp}")
 
@@ -260,7 +265,11 @@ if st.session_state.generated_party is not None:
     for i, cls in enumerate(st.session_state.generated_class_names):
         col_index = i % 2
         with party_cols[col_index].expander(f"{cls}", expanded=False):
-            class_features = get_class_features(cls, "Classes/")
+            try:
+                class_features = get_class_features(cls, "Classes/")
+            except Exception as e:
+                st.error(f"Error loading class {cls}: {e}")
+                continue
             st.markdown("**LvL:** 5")
             for key, value in class_features.items():
                 if isinstance(value, list):
@@ -272,7 +281,7 @@ if st.session_state.generated_party is not None:
 
     st.markdown("---")
     st.subheader("Build the Enemy Encounter Team!")
-
+    
     # Enemy selection in two columns
     col_enemy1, col_enemy2 = st.columns(2)
     enemy_cols = [col_enemy1, col_enemy2]
@@ -288,14 +297,13 @@ if st.session_state.generated_party is not None:
     enemy_total_exp = compute_enemy_exp(selected_enemies)
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
+    # --------------------- SUBMIT ENCOUNTER ---------------------
     if st.button("✅ Submit Decision"):
-        # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
+        # Ensure at least one enemy (other than the default) is selected
         if not any(choice != enemy_options[0] for choice in selected_enemies):
-            st.warning(
-                "Please, to submit you have at least to pick one enemy encounter or, if you do not like the current Party Members, generate a new party by pressing the Generate Encounter button!"
-            )
+            st.warning("Please select at least one enemy (or generate a new party) before submitting!")
         else:
-            st.session_state.counter += 1
+            # Build the encounter data dictionary
             encounter_data = {
                 "expertise": selected_expertise,
                 "party": list(st.session_state.generated_class_names),
@@ -303,21 +311,62 @@ if st.session_state.generated_party is not None:
                 "enemies": selected_enemies,
                 "enemy_exp": enemy_total_exp
             }
+            # Append this encounter to the session list (to accumulate 5 encounters)
+            st.session_state.session_encounters.append(encounter_data)
+            st.session_state.counter += 1
+
+            # Push the current encounter data to GitHub
             new_line = json.dumps(encounter_data)
-
             status, response = push_to_github(new_line)
-            counter = st.session_state.counter
-
             if status in (200, 201):
                 st.success("✅ Data successfully uploaded to GitHub!")
-                print("✅ Data successfully uploaded to GitHub!")
             else:
                 st.error(f"❌ Failed to upload data: {response}")
-                print(f"❌ Failed to upload data: {response}")
 
-            # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
-            for key in list(st.session_state.keys()):
-                if key not in ["counter", "git_filename"]:
-                    del st.session_state[key]
-            st.session_state.counter = counter  
-            st.rerun()
+            # If 5 encounters have been submitted, run simulations
+            if st.session_state.counter == 5:
+                st.info("5 encounters submitted. Running simulations for all encounters…")
+
+                simulation_results = []
+                # For each encounter, run the simulation benchmark
+                for encounter in st.session_state.session_encounters:
+                    party = encounter["party"]
+                    # Process enemy selections: remove the default option
+                    enemy_names = [
+                        enemy.split("->")[0].strip()
+                        for enemy in encounter["enemies"]
+                        if enemy != enemy_options[0]
+                    ]
+                    # Run the simulation
+                    win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
+                    simulation_results.append({
+                        "win_prob": win_prob,
+                        "rounds_num": rounds_num,
+                        "dmg_player": dmg_player,
+                        "death_num": death_num,
+                        "team_health": team_health
+                    })
+
+                # Calculate averaged results over the 5 encounters
+                avg_win_prob    = np.mean([res["win_prob"] for res in simulation_results])
+                avg_rounds_num  = np.mean([res["rounds_num"] for res in simulation_results])
+                avg_dmg_player  = np.mean([res["dmg_player"] for res in simulation_results])
+                avg_death_num   = np.mean([res["death_num"] for res in simulation_results])
+                avg_team_health = np.mean([res["team_health"] for res in simulation_results])
+
+                # Display the simulation summary in an expander (fancy popup)
+                with st.expander("🧪 Simulation Summary (Click to View)", expanded=True):
+                    st.markdown("## Averaged Simulation Results (Based on 5 Submissions)")
+                    st.write(f"**Average Win Probability:** {avg_win_prob:.2f}")
+                    st.write(f"**Average Rounds:** {avg_rounds_num:.2f}")
+                    st.write(f"**Average Player Damage:** {avg_dmg_player:.2f}")
+                    st.write(f"**Average Deaths:** {avg_death_num:.2f}")
+                    st.write(f"**Average Team Health:** {avg_team_health:.2f}")
+
+                # Provide a button to fully reset the session (creating a new session and JSON file)
+                if st.button("🔄 Reset Session"):
+                    st.session_state.clear()
+                    st.experimental_rerun()
+            else:
+                st.info(f"{st.session_state.counter} encounter(s) submitted. Submit {5 - st.session_state.counter} more to run simulations.")
+
