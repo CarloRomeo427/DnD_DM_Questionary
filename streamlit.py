@@ -296,8 +296,10 @@ if st.session_state.get("generated_party") is not None:
     # --------------------- SUBMIT ENCOUNTER ---------------------
     col_butt = st.columns(2)
     with col_butt[1]:
-        if st.button("🔄 Reset Encounter", on_click=st.rerun):
-            pass
+        if st.button("🔄 Reset Test"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
     with col_butt[0]:
         if st.button("✅ Submit Decision", disabled=st.session_state.buttons_disabled):
             # Ensure at least one enemy (other than the default) is selected
@@ -385,6 +387,7 @@ if st.session_state.get("generated_party") is not None:
                     if 'show_popup' not in st.session_state:
                         st.session_state.show_popup = True
                         toggle_buttons()
+                        st.update_this_session()
 
                     
                     
