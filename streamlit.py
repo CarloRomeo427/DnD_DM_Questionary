@@ -387,7 +387,7 @@ if st.session_state.get("generated_party") is not None:
                     if 'show_popup' not in st.session_state:
                         st.session_state.show_popup = True
                         toggle_buttons()
-                        st.update_this_session()
+                        st.rerun()
 
                     
                     
