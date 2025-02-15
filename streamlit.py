@@ -373,7 +373,8 @@ if st.session_state.generated_party is not None:
                 deaths /= 5
                 healths /= 5
 
-                
+                show_statistics(wins, rounds, dmgs, deaths, healths)
 
+            
             else:              
                 st.rerun()
