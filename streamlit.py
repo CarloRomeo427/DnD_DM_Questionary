@@ -9,6 +9,9 @@ import time
 import datetime  # New import for timestamp generation
 from simulate import benchmark
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
@@ -335,24 +338,24 @@ if st.session_state.generated_party is not None:
             )
         else:
             st.session_state.counter += 1
-            encounter_data = {
-                "expertise": selected_expertise,
-                "party": list(st.session_state.generated_class_names),
-                "party_exp": st.session_state.party_exp,
-                "enemies": selected_enemies,
-                "enemy_exp": enemy_total_exp
-            }
-            new_line = json.dumps(encounter_data)
+            # encounter_data = {
+            #     "expertise": selected_expertise,
+            #     "party": list(st.session_state.generated_class_names),
+            #     "party_exp": st.session_state.party_exp,
+            #     "enemies": selected_enemies,
+            #     "enemy_exp": enemy_total_exp
+            # }
+            # new_line = json.dumps(encounter_data)
 
-            status, response = push_to_github(new_line)
+            # status, response = push_to_github(new_line)
             counter = st.session_state.counter
 
-            if status in (200, 201):
-                st.success("✅ Data successfully uploaded to GitHub!")
-                print("✅ Data successfully uploaded to GitHub!")
-            else:
-                st.error(f"❌ Failed to upload data: {response}")
-                print(f"❌ Failed to upload data: {response}")
+            # if status in (200, 201):
+            #     st.success("✅ Data successfully uploaded to GitHub!")
+            #     print("✅ Data successfully uploaded to GitHub!")
+            # else:
+            #     st.error(f"❌ Failed to upload data: {response}")
+            #     print(f"❌ Failed to upload data: {response}")
 
             # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
             for key in list(st.session_state.keys()):
@@ -360,26 +363,26 @@ if st.session_state.generated_party is not None:
                     del st.session_state[key]
             st.session_state.counter = counter
 
-            if st.session_state.counter == 1:
-                st.session_state.session_locked = True
+            if st.session_state.counter  > 0:
+                # st.session_state.session_locked = True
                 wins, rounds, dmgs, deaths, healths = 0, 0, 0, 0, 0
                 for party, enemy in zip(st.session_state.parties, st.session_state.enemies):
 
                     win_probability, rounds_number, dmg_player, DeathNumber, TeamHealth = benchmark(party, enemy)
-                    print(f"Win probability: {win_probability} | Rounds number: {rounds_number} | Player damage: {dmg_player} | Death number: {DeathNumber} | Team health: {TeamHealth}")
-                    print(f"Party: {party} | Enemies: {enemy}")
+                    logging.debug(f"Party: {party} | Enemies: {enemy}")
+                    logging.debug(f"Win probability: {win_probability} | Rounds number: {rounds_number} | Player damage: {dmg_player} | Death number: {DeathNumber} | Team health: {TeamHealth}")
                     wins += win_probability
                     rounds += rounds_number
                     dmgs += dmg_player
                     deaths += DeathNumber
                     healths += TeamHealth
-                wins /= 5
-                rounds /= 5
-                dmgs /= 5
-                deaths /= 5
-                healths /= 5
+                    show_statistics(wins, rounds, dmgs, deaths, healths)
+                # wins /= 5
+                # rounds /= 5
+                # dmgs /= 5
+                # deaths /= 5
+                # healths /= 5
 
-                show_statistics(wins, rounds, dmgs, deaths, healths)
                 # Fullscreen overlay that can't be closed
 
 
