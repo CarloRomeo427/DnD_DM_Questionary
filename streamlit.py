@@ -133,8 +133,10 @@ def show_statistics(wins, rounds, dmgs, deaths, healths):
     st.write(f"Death number: {deaths}")
     st.write(f"Team health: {healths}")
 
+
+    st.write("If you want to play again, press the Reset Session button below!")
     # Reset button
-    if st.button("Reset Session"):
+    if st.button("New Game!"):
         reset_session()
         st.rerun()
 
@@ -358,6 +360,7 @@ if st.session_state.generated_party is not None:
             st.session_state.counter = counter
 
             if st.session_state.counter == 1:
+                st.session_state.session_locked = True
                 wins, rounds, dmgs, deaths, healths = 0, 0, 0, 0, 0
                 for party, enemy in zip(st.session_state.parties, st.session_state.enemies):
 
@@ -378,20 +381,6 @@ if st.session_state.generated_party is not None:
                 show_statistics(wins, rounds, dmgs, deaths, healths)
                 # Fullscreen overlay that can't be closed
 
-                # Prevent interaction with anything else
-                st.markdown(
-                    """
-                    <style>
-                    .stApp {
-                        pointer-events: none;
-                    }
-                    .stButton {
-                        pointer-events: auto;
-                    }
-                    </style>
-                    """,
-                    unsafe_allow_html=True
-                )
 
             
             else:              
