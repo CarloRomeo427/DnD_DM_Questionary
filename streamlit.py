@@ -118,10 +118,9 @@ if "party_indices" not in st.session_state:
 # --------------------- FUNCTIONS ---------------------
 def reset_session():
     for key in list(st.session_state.keys()):
-        if key not in ["counter", "git_filename"]:
+        if key not in ["counter", "git_filename", "parties", "enemies"]:
             del st.session_state[key]
-    st.session_state.counter = 0
-    st.rerun()
+    st.session_state.counter = counter
 
 def get_next_party_matrix():
     idx = rnd.choice(st.session_state.party_indices)
@@ -338,7 +337,7 @@ if st.session_state.generated_party is not None:
 
             # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
             for key in list(st.session_state.keys()):
-                if key not in ["counter", "git_filename"]:
+                if key not in ["counter", "git_filename", "parties", "enemies"]:
                     del st.session_state[key]
             st.session_state.counter = counter
 
