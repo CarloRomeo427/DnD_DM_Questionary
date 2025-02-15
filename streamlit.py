@@ -141,6 +141,7 @@ def reset_session():
 
 @st.dialog("Statistics Popup", width="large")
 def show_statistics(wins, rounds, dmgs, deaths, healths):
+    st.rerun()
     st.write("Here are the statistics for the last 5 encounters:")
     st.write(f"Win probability: {wins}")
     st.write(f"Rounds number: {rounds}")
