@@ -127,10 +127,14 @@ def log_debug(message):
 
 
 def reset_session():
+    # Keep session_encounters and any other keys you want to persist
+    keys_to_preserve = {"session_encounters"}
     for key in list(st.session_state.keys()):
-        del st.session_state[key]
+        if key not in keys_to_preserve:
+            del st.session_state[key]
     st.session_state.counter = 0
-    st.rerun() 
+    st.rerun()
+ 
     
 
 @st.dialog("Statistics Popup", width="large")
