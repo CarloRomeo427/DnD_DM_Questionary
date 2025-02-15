@@ -365,9 +365,9 @@ if st.session_state.generated_party is not None:
                 wins, rounds, dmgs, deaths, healths = 0, 0, 0, 0, 0
                 for party, enemy in zip(st.session_state.parties, st.session_state.enemies):
 
-                    print(party, enemy)
-                    input()
                     win_probability, rounds_number, dmg_player, DeathNumber, TeamHealth = benchmark(party, enemy)
+                    print(f"Win probability: {win_probability} | Rounds number: {rounds_number} | Player damage: {dmg_player} | Death number: {DeathNumber} | Team health: {TeamHealth}")
+                    print(f"Party: {party} | Enemies: {enemy}")
                     wins += win_probability
                     rounds += rounds_number
                     dmgs += dmg_player
