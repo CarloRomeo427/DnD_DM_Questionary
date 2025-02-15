@@ -122,6 +122,20 @@ def reset_session():
             del st.session_state[key]
     st.session_state.counter = counter
 
+@st.dialog("Statistics Popup", width="large")
+def show_statistics(wins, rounds, dmgs, deaths, healths):
+    st.write("Here are the statistics for the last 5 encounters:")
+    st.write(f"Win probability: {wins}")
+    st.write(f"Rounds number: {rounds}")
+    st.write(f"Player damage: {dmgs}")
+    st.write(f"Death number: {deaths}")
+    st.write(f"Team health: {healths}")
+
+    # Reset button
+    if st.button("Reset Session"):
+        reset_session()
+        st.rerun()
+
 def get_next_party_matrix():
     idx = rnd.choice(st.session_state.party_indices)
     return st.session_state.precomputed_parties[idx], st.session_state.precomputed_class_names[idx]
@@ -341,9 +355,12 @@ if st.session_state.generated_party is not None:
                     del st.session_state[key]
             st.session_state.counter = counter
 
-            if st.session_state.counter == 5:
+            if st.session_state.counter == 1:
                 wins, rounds, dmgs, deaths, healths = 0, 0, 0, 0, 0
                 for party, enemy in zip(st.session_state.parties, st.session_state.enemies):
+
+                    print(party, enemy)
+                    input()
                     win_probability, rounds_number, dmg_player, DeathNumber, TeamHealth = benchmark(party, enemy)
                     wins += win_probability
                     rounds += rounds_number
@@ -356,16 +373,7 @@ if st.session_state.generated_party is not None:
                 deaths /= 5
                 healths /= 5
 
-                with st.container():
-                    st.subheader("Your DM Expertise:")
-                    st.write(f"Win Probability: {wins:.2f}")
-                    st.write(f"Rounds: {rounds:.2f}")
-                    st.write(f"Damage dealt: {dmgs:.2f}")
-                    st.write(f"Total Party Kills: {deaths:.2f}")
-                    st.write(f"Team Health: {healths:.2f}")
-                    
-                    # Reset button
-                    st.button("Reset Session", on_click=reset_session)
+                
 
             else:              
                 st.rerun()
