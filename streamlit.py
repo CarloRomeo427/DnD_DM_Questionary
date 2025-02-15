@@ -282,20 +282,6 @@ but at the same time the challenge must not be insurmountable causing frustratio
 </div>
 """, unsafe_allow_html=True)
 
-# --------------------- DM EXPERTISE SELECTION ---------------------
-expertise_levels = [
-    "Noob - Still learning what a d20 is",
-    "Amateur - Can handle small encounters, but big foes are scary",
-    "Skilled - Runs epic battles with minimal confusion",
-    "Expert - NPC voices so good, players forget it's you",
-    "Legendary - Godlike storyteller, even Tiamat takes notes"
-]
-
-st.subheader("Expertise as DM")
-selected_expertise = st.selectbox("Choose your expertise level:", expertise_levels)
-st.markdown("---")
-
-
 if "blocks" in st.session_state and st.session_state.blocks:
     simulation_results = []
     # For each encounter, run the simulation benchmark
@@ -324,7 +310,26 @@ if "blocks" in st.session_state and st.session_state.blocks:
 
     show_statistics(wins, rounds, dmg, deaths, healths)
 
+    if st.button("🔄 Reset Game"):
+                reset_session()
+
 else:
+
+    # --------------------- DM EXPERTISE SELECTION ---------------------
+    expertise_levels = [
+        "Noob - Still learning what a d20 is",
+        "Amateur - Can handle small encounters, but big foes are scary",
+        "Skilled - Runs epic battles with minimal confusion",
+        "Expert - NPC voices so good, players forget it's you",
+        "Legendary - Godlike storyteller, even Tiamat takes notes"
+    ]
+
+    st.subheader("Expertise as DM")
+    selected_expertise = st.selectbox("Choose your expertise level:", expertise_levels)
+    st.markdown("---")
+
+
+
 
     # --------------------- ENCOUNTER GENERATION ---------------------
     col_gen, col_counter = st.columns([3, 1])
