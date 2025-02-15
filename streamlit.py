@@ -338,78 +338,84 @@ if st.session_state.generated_party is not None:
     enemy_total_exp = compute_enemy_exp(selected_enemies)
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
-    if st.button("✅ Submit Decision"):
-        # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
-        if not any(choice != enemy_options[0] for choice in selected_enemies):
-            st.warning(
-                "Please, to submit you have at least to pick one enemy encounter or, if you do not like the current Party Members, generate a new party by pressing the Generate Encounter button!"
-            )
-        else:
-            st.session_state.counter += 1
-            encounter_data = {
-                "expertise": selected_expertise,
-                "party": list(st.session_state.generated_class_names),
-                "party_exp": st.session_state.party_exp,
-                "enemies": selected_enemies,
-                "enemy_exp": enemy_total_exp
-            }
-            new_line = json.dumps(encounter_data)
-            st.session_state.session_encounters.append(encounter_data)
-            status, response = push_to_github(new_line)
-            counter = st.session_state.counter
+    cols = st.columns(2)
+    with cols[1]:
+        if st.button("🔄 Reset Game"):
+            reset_session()
 
-            if status in (200, 201):
-                st.success("✅ Data successfully uploaded to GitHub!")
-                print("✅ Data successfully uploaded to GitHub!")
+    with cols[0]:
+        if st.button("✅ Submit Decision"):
+            # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
+            if not any(choice != enemy_options[0] for choice in selected_enemies):
+                st.warning(
+                    "Please, to submit you have at least to pick one enemy encounter or, if you do not like the current Party Members, generate a new party by pressing the Generate Encounter button!"
+                )
             else:
-                st.error(f"❌ Failed to upload data: {response}")
-                print(f"❌ Failed to upload data: {response}")
+                st.session_state.counter += 1
+                encounter_data = {
+                    "expertise": selected_expertise,
+                    "party": list(st.session_state.generated_class_names),
+                    "party_exp": st.session_state.party_exp,
+                    "enemies": selected_enemies,
+                    "enemy_exp": enemy_total_exp
+                }
+                new_line = json.dumps(encounter_data)
+                st.session_state.session_encounters.append(encounter_data)
+                status, response = push_to_github(new_line)
+                counter = st.session_state.counter
 
-            # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
-            for key in list(st.session_state.keys()):
-                if key not in ["counter", "git_filename", "parties", "enemies", "session_encounters"]:
-                    del st.session_state[key]
-            st.session_state.counter = counter
+                if status in (200, 201):
+                    st.success("✅ Data successfully uploaded to GitHub!")
+                    print("✅ Data successfully uploaded to GitHub!")
+                else:
+                    st.error(f"❌ Failed to upload data: {response}")
+                    print(f"❌ Failed to upload data: {response}")
 
-            # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-            if st.session_state.counter < 5:
-                # Clear the current party so that a new one is generated on the next run.
-                st.session_state.generated_party = None
-                st.session_state.generated_class_names = None
-                st.session_state.party_exp = 0
-                # Clear enemy selection keys so the selectboxes reset to default.
-                for i in range(1, 9):
-                    if f"enemy_{i}" in st.session_state:
-                        del st.session_state[f"enemy_{i}"]
-                st.rerun()
-            # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
-            else:
-                st.session_state.is_locked = False
+                # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
+                for key in list(st.session_state.keys()):
+                    if key not in ["counter", "git_filename", "parties", "enemies", "session_encounters"]:
+                        del st.session_state[key]
+                st.session_state.counter = counter
 
-                st.info("5 encounters submitted. Running simulations for all encounters…")
-                simulation_results = []
-                # For each encounter, run the simulation benchmark
-                for encounter in st.session_state.session_encounters:
-                    party = encounter["party"]
-                    # Process enemy selections: remove the default option
-                    enemy_names = [
-                        enemy.split("->")[0].strip()
-                        for enemy in encounter["enemies"]
-                        if enemy != enemy_options[0]
-                    ]
-                    # Run the simulation
-                    win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
-                    simulation_results.append({
-                        "win_prob": win_prob,
-                        "rounds_num": rounds_num,
-                        "dmg_player": dmg_player,
-                        "death_num": death_num,
-                        "team_health": team_health
-                    })
-                wins = np.mean([result["win_prob"] for result in simulation_results])
-                rounds = np.mean([result["rounds_num"] for result in simulation_results])
-                dmg = np.mean([result["dmg_player"] for result in simulation_results])
-                deaths = np.mean([result["death_num"] for result in simulation_results])
-                healths = np.mean([result["team_health"] for result in simulation_results])
+                # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
+                if st.session_state.counter < 5:
+                    # Clear the current party so that a new one is generated on the next run.
+                    st.session_state.generated_party = None
+                    st.session_state.generated_class_names = None
+                    st.session_state.party_exp = 0
+                    # Clear enemy selection keys so the selectboxes reset to default.
+                    for i in range(1, 9):
+                        if f"enemy_{i}" in st.session_state:
+                            del st.session_state[f"enemy_{i}"]
+                    st.rerun()
+                # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
+                else:
+                    st.session_state.is_locked = False
 
-                show_statistics(wins, rounds, dmg, deaths, healths)
+                    st.info("5 encounters submitted. Running simulations for all encounters…")
+                    simulation_results = []
+                    # For each encounter, run the simulation benchmark
+                    for encounter in st.session_state.session_encounters:
+                        party = encounter["party"]
+                        # Process enemy selections: remove the default option
+                        enemy_names = [
+                            enemy.split("->")[0].strip()
+                            for enemy in encounter["enemies"]
+                            if enemy != enemy_options[0]
+                        ]
+                        # Run the simulation
+                        win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
+                        simulation_results.append({
+                            "win_prob": win_prob,
+                            "rounds_num": rounds_num,
+                            "dmg_player": dmg_player,
+                            "death_num": death_num,
+                            "team_health": team_health
+                        })
+                    wins = np.round(np.mean([result["win_prob"] for result in simulation_results]), 2)
+                    rounds = np.round(np.mean([result["rounds_num"] for result in simulation_results]), 2)
+                    dmg = np.round(np.mean([result["dmg_player"] for result in simulation_results]), 2)
+                    deaths = np.round(np.mean([result["death_num"] for result in simulation_results]), 2)
+                    healths = np.round(np.mean([result["team_health"] for result in simulation_results]), 2)
+
+                    show_statistics(wins, rounds, dmg, deaths, healths)
