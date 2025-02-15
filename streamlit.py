@@ -106,8 +106,7 @@ data = np.load(DATA_FILE, allow_pickle=True)
 precomputed_parties = data["matrices"]
 precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
-st.session_state.parties = []
-st.session_state.enemies = []
+st.session_state.setdefault("session_encounters", [])
 
 if "counter" not in st.session_state:
     st.session_state.counter = 0
@@ -344,24 +343,24 @@ if st.session_state.generated_party is not None:
             )
         else:
             st.session_state.counter += 1
-            # encounter_data = {
-            #     "expertise": selected_expertise,
-            #     "party": list(st.session_state.generated_class_names),
-            #     "party_exp": st.session_state.party_exp,
-            #     "enemies": selected_enemies,
-            #     "enemy_exp": enemy_total_exp
-            # }
-            # new_line = json.dumps(encounter_data)
-
-            # status, response = push_to_github(new_line)
+            encounter_data = {
+                "expertise": selected_expertise,
+                "party": list(st.session_state.generated_class_names),
+                "party_exp": st.session_state.party_exp,
+                "enemies": selected_enemies,
+                "enemy_exp": enemy_total_exp
+            }
+            new_line = json.dumps(encounter_data)
+            st.session_state.session_encounters.append(encounter_data)
+            status, response = push_to_github(new_line)
             counter = st.session_state.counter
 
-            # if status in (200, 201):
-            #     st.success("✅ Data successfully uploaded to GitHub!")
-            #     print("✅ Data successfully uploaded to GitHub!")
-            # else:
-            #     st.error(f"❌ Failed to upload data: {response}")
-            #     print(f"❌ Failed to upload data: {response}")
+            if status in (200, 201):
+                st.success("✅ Data successfully uploaded to GitHub!")
+                print("✅ Data successfully uploaded to GitHub!")
+            else:
+                st.error(f"❌ Failed to upload data: {response}")
+                print(f"❌ Failed to upload data: {response}")
 
             # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
             for key in list(st.session_state.keys()):
@@ -369,31 +368,43 @@ if st.session_state.generated_party is not None:
                     del st.session_state[key]
             st.session_state.counter = counter
 
-            if st.session_state.counter  > 0:
-                # st.session_state.session_locked = True
-                wins, rounds, dmgs, deaths, healths = 0, 0, 0, 0, 0
-                for party, enemy in zip(st.session_state.parties, st.session_state.enemies):
-
-                    log_debug(f"Party: {party} | Enemies: {enemy}")
-                    win_probability, rounds_number, dmg_player, DeathNumber, TeamHealth = benchmark(party, enemy)
-                    log_debug(
-                        f"Win probability: {win_probability} | Rounds: {rounds_number} | "
-                        f"Damage: {dmg_player} | Deaths: {DeathNumber} | Team health: {TeamHealth}"
-                    )
-                    wins += win_probability
-                    rounds += rounds_number
-                    dmgs += dmg_player
-                    deaths += DeathNumber
-                    healths += TeamHealth
-                    show_statistics(wins, rounds, dmgs, deaths, healths)
-                # wins /= 5
-                # rounds /= 5
-                # dmgs /= 5
-                # deaths /= 5
-                # healths /= 5
-
-                # Fullscreen overlay that can't be closed
-
-
-            else:              
+            # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
+            if st.session_state.counter < 1:
+                # Clear the current party so that a new one is generated on the next run.
+                st.session_state.generated_party = None
+                st.session_state.generated_class_names = None
+                st.session_state.party_exp = 0
+                # Clear enemy selection keys so the selectboxes reset to default.
+                for i in range(1, 9):
+                    if f"enemy_{i}" in st.session_state:
+                        del st.session_state[f"enemy_{i}"]
                 st.rerun()
+            # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
+            else:
+                st.info("5 encounters submitted. Running simulations for all encounters…")
+                simulation_results = []
+                # For each encounter, run the simulation benchmark
+                for encounter in st.session_state.session_encounters:
+                    party = encounter["party"]
+                    # Process enemy selections: remove the default option
+                    enemy_names = [
+                        enemy.split("->")[0].strip()
+                        for enemy in encounter["enemies"]
+                        if enemy != enemy_options[0]
+                    ]
+                    # Run the simulation
+                    win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
+                    simulation_results.append({
+                        "win_prob": win_prob,
+                        "rounds_num": rounds_num,
+                        "dmg_player": dmg_player,
+                        "death_num": death_num,
+                        "team_health": team_health
+                    })
+                wins = np.mean([result["win_prob"] for result in simulation_results])
+                rounds = np.mean([result["rounds_num"] for result in simulation_results])
+                dmg = np.mean([result["dmg_player"] for result in simulation_results])
+                deaths = np.mean([result["death_num"] for result in simulation_results])
+                healths = np.mean([result["team_health"] for result in simulation_results])
+
+                show_statistics(wins, rounds, dmg, deaths, healths)
