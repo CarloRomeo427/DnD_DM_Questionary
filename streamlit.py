@@ -141,7 +141,6 @@ def reset_session():
 
 @st.dialog("Statistics Popup", width="large")
 def show_statistics(wins, rounds, dmgs, deaths, healths):
-    st.rerun()
     st.write("Here are the statistics for the last 5 encounters:")
     st.write(f"Win probability: {wins}")
     st.write(f"Rounds number: {rounds}")
@@ -382,7 +381,7 @@ if st.session_state.generated_party is not None:
                 st.session_state.counter = counter
 
                 # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-                if st.session_state.counter < 5:
+                if st.session_state.counter < 2:
                     # Clear the current party so that a new one is generated on the next run.
                     st.session_state.generated_party = None
                     st.session_state.generated_class_names = None
@@ -394,8 +393,9 @@ if st.session_state.generated_party is not None:
                     st.rerun()
                 # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
                 else:
-                    st.session_state.is_locked = False
+                    st.session_state.is_locked = True
                     st.session_state.blocks = True
+                    st.rerun()
                     st.info("5 encounters submitted. Running simulations for all encounters…")
                     simulation_results = []
                     # For each encounter, run the simulation benchmark
