@@ -107,6 +107,8 @@ precomputed_parties = data["matrices"]
 precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 st.session_state.setdefault("session_encounters", [])
+st.session_state.setdefault("blocks", False)
+
 
 if "counter" not in st.session_state:
     st.session_state.counter = 0
@@ -296,7 +298,8 @@ st.markdown("---")
 # --------------------- ENCOUNTER GENERATION ---------------------
 col_gen, col_counter = st.columns([3, 1])
 with col_gen:  
-    st.button("🎲 Generate Encounter", on_click=generate_encounter)
+    st.button("🎲 Generate Encounter", on_click=generate_encounter,
+        disabled=st.session_state.blocks)
 with col_counter:
     st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter,)
     
@@ -338,13 +341,13 @@ if st.session_state.generated_party is not None:
     enemy_total_exp = compute_enemy_exp(selected_enemies)
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
-    cols = st.columns(2)
-    with cols[1]:
+    col_sub, col_res = st.columns([3, 1])
+    with col_res:
         if st.button("🔄 Reset Game"):
             reset_session()
 
-    with cols[0]:
-        if st.button("✅ Submit Decision"):
+    with col_sub:
+        if st.button("✅ Submit Decision", ):
             # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
             if not any(choice != enemy_options[0] for choice in selected_enemies):
                 st.warning(
@@ -391,7 +394,7 @@ if st.session_state.generated_party is not None:
                 # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
                 else:
                     st.session_state.is_locked = False
-
+                    st.session_state.blocks = True
                     st.info("5 encounters submitted. Running simulations for all encounters…")
                     simulation_results = []
                     # For each encounter, run the simulation benchmark
