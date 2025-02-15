@@ -120,9 +120,9 @@ if "party_indices" not in st.session_state:
 # --------------------- FUNCTIONS ---------------------
 def reset_session():
     for key in list(st.session_state.keys()):
-        if key not in ["counter", "git_filename", "parties", "enemies"]:
-            del st.session_state[key]
-    st.session_state.counter = counter
+        del st.session_state[key]
+    st.session_state.counter = 0   
+    
 
 @st.dialog("Statistics Popup", width="large")
 def show_statistics(wins, rounds, dmgs, deaths, healths):
@@ -382,6 +382,5 @@ if st.session_state.generated_party is not None:
                 # Fullscreen overlay that can't be closed
 
 
-            
             else:              
                 st.rerun()
