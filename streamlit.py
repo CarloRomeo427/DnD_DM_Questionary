@@ -310,8 +310,9 @@ if "blocks" in st.session_state and st.session_state.blocks:
 
     show_statistics(wins, rounds, dmg, deaths, healths)
 
+    st.markdown("---")
     if st.button("🔄 Reset Game"):
-                reset_session()
+        reset_session()
 
 else:
 
