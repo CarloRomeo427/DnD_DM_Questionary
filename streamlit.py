@@ -121,7 +121,8 @@ if "party_indices" not in st.session_state:
 def reset_session():
     for key in list(st.session_state.keys()):
         del st.session_state[key]
-    st.session_state.counter = 0   
+    st.session_state.counter = 0
+    st.rerun() 
     
 
 @st.dialog("Statistics Popup", width="large")
@@ -138,7 +139,7 @@ def show_statistics(wins, rounds, dmgs, deaths, healths):
     # Reset button
     if st.button("New Game!"):
         reset_session()
-        st.rerun()
+        
 
 def get_next_party_matrix():
     idx = rnd.choice(st.session_state.party_indices)
