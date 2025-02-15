@@ -372,7 +372,7 @@ if st.session_state.generated_party is not None:
             st.session_state.counter = counter
 
             # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-            if st.session_state.counter < 1:
+            if st.session_state.counter < 5:
                 # Clear the current party so that a new one is generated on the next run.
                 st.session_state.generated_party = None
                 st.session_state.generated_class_names = None
@@ -384,6 +384,8 @@ if st.session_state.generated_party is not None:
                 st.rerun()
             # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
             else:
+                st.session_state.is_locked = False
+
                 st.info("5 encounters submitted. Running simulations for all encounters…")
                 simulation_results = []
                 # For each encounter, run the simulation benchmark
