@@ -7,6 +7,7 @@ import requests
 import base64
 import time
 import datetime  # New import for timestamp generation
+from simulate import benchmark
 
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
@@ -15,18 +16,18 @@ GITHUB_BRANCH = "main"
 # Note: The file path is now dynamic (unique per session)
 
 def push_to_github(new_line_data):
-    """Writes new_line_data to a session-specific JSON file with a unique identifier to avoid conflicts.
-       Each new JSON entry is appended as a separate line."""
+    """Writes new_line_data (a JSON string representing a dictionary) as an element of an array in a session-specific JSON file.
+    
+    If the file doesn't exist, it creates one with the data wrapped in an array.
+    If the file exists, it loads the current array, appends the new dictionary, and writes the updated array.
+    """
     # Generate a unique file name for this session if it doesn't exist
     if "git_filename" not in st.session_state:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         random_int = rnd.randint(1000, 9999)
-        # Save to the Humans folder with a unique file name
         st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
     
     file_name = st.session_state.git_filename
-
-    # Use the API endpoint URL with the dynamic file name in the Humans folder
     url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/Humans/{file_name}"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
@@ -47,12 +48,31 @@ def push_to_github(new_line_data):
         sha = None
         current_text = ""
     
-    # Append the new encounter data as a new line if file already exists; otherwise, use it as the content
-    # This is where the newline separator is added.
+    # Initialize data_list as an array. If current_text exists, try to parse it.
     if current_text.strip():
-        new_text = current_text.rstrip() + "," + new_line_data
+        try:
+            data_list = json.loads(current_text)
+            # Ensure the content is a list
+            if not isinstance(data_list, list):
+                data_list = []
+        except Exception as e:
+            st.error(f"Error decoding current JSON content: {e}")
+            data_list = []
     else:
-        new_text = new_line_data
+        data_list = []
+    
+    # Parse the new_line_data (which should be a JSON string representing a dictionary)
+    try:
+        new_data = json.loads(new_line_data)
+    except Exception as e:
+        st.error(f"Error decoding new encounter data: {e}")
+        return None, {"error": str(e)}
+    
+    # Append the new data to the array
+    data_list.append(new_data)
+    
+    # Serialize the entire list as JSON (formatted with indentation for readability)
+    new_text = json.dumps(data_list, indent=4)
     
     # Encode the new content in Base64
     content_b64 = base64.b64encode(new_text.encode("utf-8")).decode("utf-8")
@@ -70,6 +90,7 @@ def push_to_github(new_line_data):
     put_response = requests.put(url, headers=headers, json=data)
     return put_response.status_code, put_response.json()
 
+
 # --------------------- LOAD PRECOMPUTED DATA ---------------------
 DATA_FILE = "precomputed_party_data.npz"
 if not os.path.exists(DATA_FILE):
@@ -80,6 +101,8 @@ data = np.load(DATA_FILE, allow_pickle=True)
 precomputed_parties = data["matrices"]
 precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
+st.session_state.parties = []
+st.session_state.enemies = []
 
 if "counter" not in st.session_state:
     st.session_state.counter = 0
@@ -93,6 +116,13 @@ if "party_indices" not in st.session_state:
     st.session_state.party_exp = 0
 
 # --------------------- FUNCTIONS ---------------------
+def reset_session():
+    for key in list(st.session_state.keys()):
+        if key not in ["counter", "git_filename"]:
+            del st.session_state[key]
+    st.session_state.counter = 0
+    st.rerun()
+
 def get_next_party_matrix():
     idx = rnd.choice(st.session_state.party_indices)
     return st.session_state.precomputed_parties[idx], st.session_state.precomputed_class_names[idx]
@@ -100,6 +130,7 @@ def get_next_party_matrix():
 def generate_encounter():
     st.session_state.generated_party, st.session_state.generated_class_names = get_next_party_matrix()
     st.session_state.party_exp = calculate_party_exp(st.session_state.generated_class_names, "hard")
+    st.session_state.parties.append(st.session_state.generated_class_names)
 
 def extract_feature_constants(class_files_path):
     numerical_features = [
@@ -273,7 +304,8 @@ if st.session_state.generated_party is not None:
             slot_label = f"Enemy {i+1}"
             choice = st.selectbox(slot_label, enemy_options, index=0, key=f"enemy_{i+1}")
             selected_enemies.append(choice)
-
+    
+    st.session_state.enemies.append(selected_enemies)
     enemy_total_exp = compute_enemy_exp(selected_enemies)
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
@@ -308,5 +340,31 @@ if st.session_state.generated_party is not None:
             for key in list(st.session_state.keys()):
                 if key not in ["counter", "git_filename"]:
                     del st.session_state[key]
-            st.session_state.counter = counter  
-            st.rerun()
+            st.session_state.counter = counter
+
+            if st.session_state.counter == 5:
+                wins, rounds, dmgs, deaths, healths = 0, 0, 0, 0, 0
+                for party, enemy in zip(st.session_state.parties, st.session_state.enemies):
+                    win_probability, rounds_number, dmg_player, DeathNumber, TeamHealth = benchmark(party, enemy)
+                    wins += win_probability
+                    rounds += rounds_number
+                    dmgs += dmg_player
+                    deaths += DeathNumber
+                    healths += TeamHealth
+                wins /= 5
+                rounds /= 5
+                dmgs /= 5
+                deaths /= 5
+                healths /= 5
+
+                with st.container():
+                    st.subheader("Statistics Popup")
+                    st.write("Here are your app statistics:")
+                    st.write(f"Final count: {st.session_state.count}")
+                    # Add more statistics as needed
+                    
+                    # Reset button
+                    st.button("Reset Session", on_click=reset_session)
+
+            else:              
+                st.rerun()
