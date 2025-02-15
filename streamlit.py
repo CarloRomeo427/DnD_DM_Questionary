@@ -14,6 +14,8 @@ GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your envir
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
 # Note: The file path is now dynamic (unique per session)
+st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
+
 
 def push_to_github(new_line_data):
     """Writes new_line_data (a JSON string representing a dictionary) as an element of an array in a session-specific JSON file.
@@ -375,7 +377,7 @@ if st.session_state.generated_party is not None:
 
                 # show_statistics(wins, rounds, dmgs, deaths, healths)
                 # Fullscreen overlay that can't be closed
-                st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
+                
                 
                 # Use columns to center the content
                 col1, col2, col3 = st.columns([1, 2, 1])
