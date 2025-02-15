@@ -156,7 +156,7 @@ def get_next_party_matrix():
 def generate_encounter():
     st.session_state.generated_party, st.session_state.generated_class_names = get_next_party_matrix()
     st.session_state.party_exp = calculate_party_exp(st.session_state.generated_class_names, "hard")
-    st.session_state.parties.append(st.session_state.generated_class_names)
+    
 
 def extract_feature_constants(class_files_path):
     numerical_features = [
@@ -331,7 +331,6 @@ if st.session_state.generated_party is not None:
             choice = st.selectbox(slot_label, enemy_options, index=0, key=f"enemy_{i+1}")
             selected_enemies.append(choice)
     
-    st.session_state.enemies.append(selected_enemies)
     enemy_total_exp = compute_enemy_exp(selected_enemies)
     st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
