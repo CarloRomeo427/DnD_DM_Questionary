@@ -121,6 +121,12 @@ if "party_indices" not in st.session_state:
     st.session_state.party_exp = 0
 
 # --------------------- FUNCTIONS ---------------------
+def log_debug(message):
+    # Append the message and force flush the print to the terminal as well.
+    st.session_state.debug_logs.append(message)
+    print(message, flush=True)
+
+
 def reset_session():
     for key in list(st.session_state.keys()):
         del st.session_state[key]
@@ -368,9 +374,12 @@ if st.session_state.generated_party is not None:
                 wins, rounds, dmgs, deaths, healths = 0, 0, 0, 0, 0
                 for party, enemy in zip(st.session_state.parties, st.session_state.enemies):
 
+                    log_debug(f"Party: {party} | Enemies: {enemy}")
                     win_probability, rounds_number, dmg_player, DeathNumber, TeamHealth = benchmark(party, enemy)
-                    print(f"Party: {party} | Enemies: {enemy}")
-                    print(f"Win probability: {win_probability} | Rounds number: {rounds_number} | Player damage: {dmg_player} | Death number: {DeathNumber} | Team health: {TeamHealth}")
+                    log_debug(
+                        f"Win probability: {win_probability} | Rounds: {rounds_number} | "
+                        f"Damage: {dmg_player} | Deaths: {DeathNumber} | Team health: {TeamHealth}"
+                    )
                     wins += win_probability
                     rounds += rounds_number
                     dmgs += dmg_player
