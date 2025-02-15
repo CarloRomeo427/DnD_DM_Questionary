@@ -376,7 +376,7 @@ if st.session_state.generated_party is not None:
 
                 # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
                 for key in list(st.session_state.keys()):
-                    if key not in ["counter", "git_filename", "parties", "enemies", "session_encounters"]:
+                    if key not in ["counter", "git_filename", "parties", "enemies", "session_encounters", "blocks"]:
                         del st.session_state[key]
                 st.session_state.counter = counter
 
