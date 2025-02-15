@@ -385,7 +385,6 @@ if st.session_state.generated_party is not None:
                 with col2:
                     st.title("Statistics Popup")
                     st.write("Here are your app statistics:")
-                    st.write(f"Final count: {st.session_state.count}")
                     # Add more statistics as needed
                     
                     # Reset button
