@@ -357,10 +357,12 @@ if st.session_state.generated_party is not None:
                 healths /= 5
 
                 with st.container():
-                    st.subheader("Statistics Popup")
-                    st.write("Here are your app statistics:")
-                    st.write(f"Final count: {st.session_state.count}")
-                    # Add more statistics as needed
+                    st.subheader("Your DM Expertise:")
+                    st.write(f"Win Probability: {wins:.2f}")
+                    st.write(f"Rounds: {rounds:.2f}")
+                    st.write(f"Damage dealt: {dmgs:.2f}")
+                    st.write(f"Total Party Kills: {deaths:.2f}")
+                    st.write(f"Team Health: {healths:.2f}")
                     
                     # Reset button
                     st.button("Reset Session", on_click=reset_session)
