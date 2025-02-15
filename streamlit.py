@@ -373,7 +373,38 @@ if st.session_state.generated_party is not None:
                 deaths /= 5
                 healths /= 5
 
-                show_statistics(wins, rounds, dmgs, deaths, healths)
+                # show_statistics(wins, rounds, dmgs, deaths, healths)
+                # Fullscreen overlay that can't be closed
+                st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
+                
+                # Use columns to center the content
+                col1, col2, col3 = st.columns([1, 2, 1])
+                
+                with col2:
+                    st.title("Statistics Popup")
+                    st.write("Here are your app statistics:")
+                    st.write(f"Final count: {st.session_state.count}")
+                    # Add more statistics as needed
+                    
+                    # Reset button
+                    if st.button("Reset Session"):
+                        reset_session()
+                        st.rerun()
+
+                # Prevent interaction with anything else
+                st.markdown(
+                    """
+                    <style>
+                    .stApp {
+                        pointer-events: none;
+                    }
+                    .stButton {
+                        pointer-events: auto;
+                    }
+                    </style>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             
             else:              
