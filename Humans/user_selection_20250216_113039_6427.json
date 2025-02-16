@@ -1,0 +1,23 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Artificer",
+            "Paladin",
+            "Fighter",
+            "Fighter"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "Brown Bear -> 200 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 200.0
+    }
+]
