@@ -213,8 +213,7 @@ def reset_session():
         if key not in keys_to_preserve:
             del st.session_state[key]
     st.session_state.counter = 0
-    conn = st.connection('gcs', type=FilesConnection)
-    df = conn.read("dm_questionary/dm_subs.csv", input_format="csv", ttl=600)
+    
     st.rerun()
  
     
