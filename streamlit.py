@@ -8,6 +8,8 @@ import base64
 import time
 import datetime  # New import for timestamp generation
 from simulate import benchmark
+from st_files_connection import FilesConnection
+
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -19,6 +21,14 @@ GITHUB_BRANCH = "main"
 # Note: The file path is now dynamic (unique per session)
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
+
+conn = st.connection('gcs', type=FilesConnection)
+df = conn.read("dm_questionary/myfile.csv", input_format="csv", ttl=600)
+
+for row in df.itertuples():
+    st.write(f"{row.name} has {row.age} years")
+
+exit()
 
 def push_to_github(new_line_data):
     """Writes new_line_data (a JSON string representing a dictionary) as an element of an array in a session-specific JSON file.

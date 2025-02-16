@@ -10,3 +10,4 @@ simulation_parameters.json
 formatted_profile.txt
 profile_results
 simulation_result.txt
+secrets.toml
