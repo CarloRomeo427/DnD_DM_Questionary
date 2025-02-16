@@ -29,7 +29,7 @@ st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 conn = st.connection('gcs', type=FilesConnection)
 df = conn.read("dm_questionary/dm_subs.csv", input_format="csv", ttl=5)
-
+st.session_state.df = df
 def backup_submission_to_csv(encounter_data):
     """
     Appends a new row to the CSV file in GCS (located at "dm_questionary/myfile.csv").
@@ -361,8 +361,7 @@ but at the same time the challenge must not be insurmountable causing frustratio
 </div>
 """, unsafe_allow_html=True)
 
-st.write(df)
-print(st.session_state.new_row)
+st.write(st.session_state.df)
 st.write(st.session_state.new_row)
 
 if "blocks" in st.session_state and st.session_state.blocks:
