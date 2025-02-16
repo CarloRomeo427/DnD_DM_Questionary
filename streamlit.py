@@ -476,14 +476,11 @@ else:
                     }
                     new_line = json.dumps(encounter_data)
                     st.session_state.session_encounters.append(encounter_data)
-                    
+                    status, response = push_to_github(new_line)
                     new_row = pd.DataFrame([st.session_state.git, encounter_data['expertise'], encounter_data['party'], encounter_data['party_exp'], 
                                             encounter_data['enemies'], encounter_data['enemy_exp']],
                                             columns=['session_id', 'expertise', 'party', 'party_exp', 'enemies', 'enemy_exp'])
                     df = pd.concat([df, new_row], ignore_index=True)
-
-
-                    status, response = push_to_github(new_line)
                     counter = st.session_state.counter
 
                     if status in (200, 201):
