@@ -6,56 +6,18 @@ import os
 import requests
 import base64
 import time
-import datetime
-import pandas as pd
-from google.cloud import storage
-import io
-import logging
+import datetime  # New import for timestamp generation
 from simulate import benchmark
 
-# Logging configuration (suppress unnecessary logs)
-logging.basicConfig(level=logging.ERROR)
-logging.getLogger("watchdog").setLevel(logging.WARNING)
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
-# GitHub Configuration (use st.secrets)
-GIT_SECRET = st.secrets["GIT_SECRET"]
+# GitHub Configuration
+GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
-
-# GCS Configuration (use st.secrets)
-GCS_BUCKET = st.secrets["GCS_BUCKET"]
-GCS_CSV_FILE = "dm_subs.csv"  # Or your desired filename
-storage_client = storage.Client()
-bucket = storage_client.get_bucket(GCS_BUCKET)
-
+# Note: The file path is now dynamic (unique per session)
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
-
-# Initialize DataFrame in session state
-if "df" not in st.session_state:
-    try:
-        blob = bucket.blob(GCS_CSV_FILE)
-        csv_string = blob.download_as_string().decode("utf-8")
-        st.session_state.df = pd.read_csv(io.StringIO(csv_string))
-    except Exception as e:
-        st.session_state.df = pd.DataFrame()  # Empty DataFrame if file not found
-
-
-def backup_submission_to_gcs(encounter_data):
-    """Updates the GCS CSV with new encounter data."""
-    session_id = st.session_state.git_filename
-    new_row = {"session_id": session_id}
-    for key, value in encounter_data.items():
-        new_row[key] = ";".join(map(str, value)) if isinstance(value, list) else value
-
-    new_df = pd.DataFrame([new_row])
-    st.session_state.df = pd.concat([st.session_state.df, new_df], ignore_index=True)
-    csv_buffer = st.session_state.df.to_csv(index=False).encode('utf-8')
-
-    blob = bucket.blob(GCS_CSV_FILE)
-    blob.upload_from_file(io.BytesIO(csv_buffer), content_type="text/csv")
-
-    st.success("Data uploaded to GCS!")
-
 
 
 def push_to_github(new_line_data):
@@ -146,7 +108,6 @@ precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 st.session_state.setdefault("session_encounters", [])
 st.session_state.setdefault("blocks", False)
-st.session_state.setdefault("new_row", [])
 
 
 if "counter" not in st.session_state:
@@ -174,7 +135,6 @@ def reset_session():
         if key not in keys_to_preserve:
             del st.session_state[key]
     st.session_state.counter = 0
-    
     st.rerun()
  
     
@@ -322,9 +282,6 @@ but at the same time the challenge must not be insurmountable causing frustratio
 </div>
 """, unsafe_allow_html=True)
 
-st.write(st.session_state.df)
-st.write(st.session_state.new_row)
-
 if "blocks" in st.session_state and st.session_state.blocks:
     simulation_results = []
     # For each encounter, run the simulation benchmark
@@ -445,7 +402,6 @@ else:
                     new_line = json.dumps(encounter_data)
                     st.session_state.session_encounters.append(encounter_data)
                     status, response = push_to_github(new_line)
-                    backup_submission_to_gcs(encounter_data)
                     counter = st.session_state.counter
 
                     if status in (200, 201):
