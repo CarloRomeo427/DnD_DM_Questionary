@@ -29,6 +29,11 @@ import io
 import datetime
 import random as rnd
 
+import csv
+import io
+import datetime
+import random as rnd
+
 def backup_submission_to_csv(encounter_data):
     """
     Appends a new row to the CSV file in GCS (located at "dm_questionary/myfile.csv").
@@ -92,8 +97,9 @@ def backup_submission_to_csv(encounter_data):
 
     new_csv_str = output.getvalue()
 
-    # Write the updated CSV back to GCS
-    conn.write(csv_path, new_csv_str, input_format="csv")
+    # Write the updated CSV back to GCS using the underlying filesystem interface
+    with conn.fs.open(csv_path, "w") as f:
+        f.write(new_csv_str)
 
 
 def push_to_github(new_line_data):
