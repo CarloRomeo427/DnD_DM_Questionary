@@ -11,6 +11,7 @@ import pandas as pd
 from google.cloud import storage
 import io
 import logging
+from simulate import benchmark
 
 # Logging configuration (suppress unnecessary logs)
 logging.basicConfig(level=logging.ERROR)
@@ -23,7 +24,7 @@ GITHUB_BRANCH = "main"
 
 # GCS Configuration (use st.secrets)
 GCS_BUCKET = st.secrets["GCS_BUCKET"]
-GCS_CSV_FILE = "your-dm_subs.csv"  # Or your desired filename
+GCS_CSV_FILE = "dm_subs.csv"  # Or your desired filename
 storage_client = storage.Client()
 bucket = storage_client.get_bucket(GCS_BUCKET)
 
