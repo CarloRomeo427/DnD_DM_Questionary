@@ -25,8 +25,7 @@ st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 conn = st.connection('gcs', type=FilesConnection)
 df = conn.read("dm_questionary/myfile.csv", input_format="csv", ttl=600)
 
-for row in df.itertuples():
-    st.write(f"{row.name} has {row.age} years")
+st.write(df)
 
 exit()
 
