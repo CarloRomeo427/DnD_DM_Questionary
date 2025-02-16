@@ -9,7 +9,9 @@ import time
 import datetime  # New import for timestamp generation
 from simulate import benchmark
 from st_files_connection import FilesConnection
-
+import csv
+import io
+import pandas as pd
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -20,19 +22,6 @@ GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
 # Note: The file path is now dynamic (unique per session)
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
-
-
-conn = st.connection('gcs', type=FilesConnection)
-
-import csv
-import io
-import datetime
-import random as rnd
-
-import csv
-import io
-import datetime
-import random as rnd
 
 conn = st.connection('gcs', type=FilesConnection)
 df = conn.read("dm_questionary/myfile.csv", input_format="csv", ttl=600)
@@ -487,7 +476,13 @@ else:
                     }
                     new_line = json.dumps(encounter_data)
                     st.session_state.session_encounters.append(encounter_data)
-                    backup_submission_to_csv(encounter_data)
+                    
+                    new_row = pd.DataFrame([st.session_state.git, encounter_data['expertise'], encounter_data['party'], encounter_data['party_exp'], 
+                                            encounter_data['enemies'], encounter_data['enemy_exp']],
+                                            columns=['session_id', 'expertise', 'party', 'party_exp', 'enemies', 'enemy_exp'])
+                    df = pd.concat([df, new_row], ignore_index=True)
+
+
                     status, response = push_to_github(new_line)
                     counter = st.session_state.counter
 
