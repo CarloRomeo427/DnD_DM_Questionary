@@ -23,14 +23,78 @@ st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 
 conn = st.connection('gcs', type=FilesConnection)
-df = conn.read("dm_questionary/myfile.csv", input_format="csv", ttl=600)
-df['Owner'] = 'Carlo'
-df['Pet'] = 'GesuCristo'
 
+import csv
+import io
+import datetime
+import random as rnd
 
-st.write(df)
+def backup_submission_to_csv(encounter_data):
+    """
+    Appends a new row to the CSV file in GCS (located at "dm_questionary/myfile.csv").
+    
+    The first column is the session id (which is the same as st.session_state.git_filename),
+    and then each key of the encounter_data JSON is a dedicated column.
+    """
+    # Use the same session id as git_filename
+    if "git_filename" not in st.session_state:
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        random_int = rnd.randint(1000, 9999)
+        st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
+    session_id = st.session_state.git_filename
 
-exit()
+    # Define the file path in GCS (always the same file)
+    csv_path = "dm_questionary/myfile.csv"
+
+    # Determine the CSV columns: session_id + sorted keys of the encounter data
+    keys = sorted(encounter_data.keys())
+    fieldnames = ["session_id"] + keys
+
+    # Prepare the new row
+    row = {"session_id": session_id}
+    for key in keys:
+        value = encounter_data[key]
+        # If the value is a list, join its items into a semicolon-separated string
+        if isinstance(value, list):
+            row[key] = ";".join(map(str, value))
+        else:
+            row[key] = value
+
+    # Try to read the existing CSV from GCS
+    try:
+        # Read the file in binary mode and decode to a string
+        csv_content = conn.read(csv_path, input_format="binary")
+        csv_str = csv_content.decode("utf-8")
+        csv_file = io.StringIO(csv_str)
+        reader = csv.DictReader(csv_file)
+        existing_rows = list(reader)
+        existing_fieldnames = reader.fieldnames
+    except Exception as e:
+        # If the file doesn't exist or an error occurs, start with an empty list
+        existing_rows = []
+        existing_fieldnames = None
+
+    # Create a new CSV content with previous rows plus the new row
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=fieldnames)
+
+    # Write header if file is new or headers differ from expected
+    if not existing_rows or existing_fieldnames != fieldnames:
+        writer.writeheader()
+
+    # Write the existing rows (ensuring all required columns are present)
+    for r in existing_rows:
+        complete_row = {fn: r.get(fn, "") for fn in fieldnames}
+        writer.writerow(complete_row)
+
+    # Write the new row
+    writer.writerow(row)
+
+    new_csv_str = output.getvalue()
+
+    # Write the updated CSV back to GCS
+    conn.write(csv_path, new_csv_str, input_format="csv")
+
 
 def push_to_github(new_line_data):
     """Writes new_line_data (a JSON string representing a dictionary) as an element of an array in a session-specific JSON file.
@@ -413,6 +477,7 @@ else:
                     }
                     new_line = json.dumps(encounter_data)
                     st.session_state.session_encounters.append(encounter_data)
+                    backup_submission_to_csv(encounter_data)
                     status, response = push_to_github(new_line)
                     counter = st.session_state.counter
 
