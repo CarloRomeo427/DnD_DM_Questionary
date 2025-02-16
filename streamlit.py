@@ -6,96 +6,56 @@ import os
 import requests
 import base64
 import time
-import datetime  # New import for timestamp generation
-from simulate import benchmark
-from st_files_connection import FilesConnection
-import csv
-import io
+import datetime
 import pandas as pd
 from google.cloud import storage
-
+import io
 import logging
-# Suppress debug/info logs by setting the root logger to ERROR
+
+# Logging configuration (suppress unnecessary logs)
 logging.basicConfig(level=logging.ERROR)
 logging.getLogger("watchdog").setLevel(logging.WARNING)
 
-
-# GitHub Configuration
-GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
+# GitHub Configuration (use st.secrets)
+GIT_SECRET = st.secrets["GIT_SECRET"]
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
 GITHUB_BRANCH = "main"
-# Note: The file path is now dynamic (unique per session)
+
+# GCS Configuration (use st.secrets)
+GCS_BUCKET = st.secrets["GCS_BUCKET"]
+GCS_CSV_FILE = "your-dm_subs.csv"  # Or your desired filename
+storage_client = storage.Client()
+bucket = storage_client.get_bucket(GCS_BUCKET)
+
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
-conn = st.connection('gcs', type=FilesConnection)
-df = conn.read("dm_questionary/dm_subs.csv", input_format="csv", ttl=5)
-st.session_state.df = df
-def backup_submission_to_csv(encounter_data):
-    """
-    Appends a new row to the CSV file in GCS (located at "dm_questionary/myfile.csv").
+# Initialize DataFrame in session state
+if "df" not in st.session_state:
+    try:
+        blob = bucket.blob(GCS_CSV_FILE)
+        csv_string = blob.download_as_string().decode("utf-8")
+        st.session_state.df = pd.read_csv(io.StringIO(csv_string))
+    except Exception as e:
+        st.session_state.df = pd.DataFrame()  # Empty DataFrame if file not found
 
-    The first column is the session id (which is the same as st.session_state.git_filename),
-    and then each key of the encounter_data JSON is a dedicated column.
-    """
-    import pandas as pd
-    from google.cloud import storage
 
-    # Use the same session id as git_filename
-    if "git_filename" not in st.session_state:
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        random_int = rnd.randint(1000, 9999)
-        st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
+def backup_submission_to_gcs(encounter_data):
+    """Updates the GCS CSV with new encounter data."""
     session_id = st.session_state.git_filename
-
-    # Prepare the new row: first column is session_id, then each key in encounter_data.
     new_row = {"session_id": session_id}
     for key, value in encounter_data.items():
-        if isinstance(value, list):
-            new_row[key] = ";".join(map(str, value))
-        else:
-            new_row[key] = value
+        new_row[key] = ";".join(map(str, value)) if isinstance(value, list) else value
 
-    # Define the CSV file path in GCS
-    csv_path = "dm_questionary/myfile.csv"
-
-    # Attempt to read the existing CSV file using the connection.
-    try:
-        df = conn.read(csv_path, input_format="csv", ttl=600)
-        # If not already a DataFrame, convert it.
-        if not isinstance(df, pd.DataFrame):
-            df = pd.DataFrame(df)
-    except Exception as e:
-        # If the file does not exist or an error occurs, start with an empty DataFrame.
-        df = pd.DataFrame()
-
-    # Create a new DataFrame for the new row.
     new_df = pd.DataFrame([new_row])
+    st.session_state.df = pd.concat([st.session_state.df, new_df], ignore_index=True)
+    csv_buffer = st.session_state.df.to_csv(index=False).encode('utf-8')
 
-    # If the existing DataFrame is not empty, ensure both DataFrames share the same columns.
-    if not df.empty:
-        # Add any missing columns in df (set as empty strings).
-        for col in new_df.columns:
-            if col not in df.columns:
-                df[col] = ""
-        # Add missing columns in new_df (set as empty strings).
-        for col in df.columns:
-            if col not in new_df.columns:
-                new_df[col] = ""
-        # Append the new row to the existing DataFrame.
-        df = pd.concat([df, new_df], ignore_index=True)
-    else:
-        df = new_df
+    blob = bucket.blob(GCS_CSV_FILE)
+    blob.upload_from_file(io.BytesIO(csv_buffer), content_type="text/csv")
 
-    # Convert the updated DataFrame to a CSV string.
-    csv_buffer = df.to_csv(index=False)
+    st.success("Data uploaded to GCS!")
 
-    # Upload the CSV string back to GCS using the google.cloud.storage client.
-    storage_client = storage.Client()
-    # Here, "dm_questionary" is assumed to be your bucket name and "myfile.csv" is the file name.
-    bucket_name = "dm_questionary"
-    bucket = storage_client.get_bucket(bucket_name)
-    blob = bucket.blob("myfile.csv")
-    blob.upload_from_string(csv_buffer, content_type="text/csv")
+
 
 def push_to_github(new_line_data):
     """Writes new_line_data (a JSON string representing a dictionary) as an element of an array in a session-specific JSON file.
@@ -484,22 +444,7 @@ else:
                     new_line = json.dumps(encounter_data)
                     st.session_state.session_encounters.append(encounter_data)
                     status, response = push_to_github(new_line)
-                    new_row = pd.DataFrame([[0, encounter_data['expertise'], 
-                          encounter_data['party'], 
-                          encounter_data['party_exp'], 
-                          encounter_data['enemies'], 
-                          encounter_data['enemy_exp']]],
-                        columns=['session_id', 'expertise', 'party', 'party_exp', 'enemies', 'enemy_exp'])
-                    st.session_state.new_row = new_row
-                    print(new_row)
-                    df = pd.concat([df, new_row], ignore_index=True)
-                    csv_buffer = df.to_csv(index=False)
-
-                    # Upload to GCS
-                    storage_client = storage.Client()
-                    bucket = storage_client.get_bucket("dm_questionary")
-                    blob = bucket.blob("your-dm_subs.csv")
-                    blob.upload_from_string(csv_buffer, content_type="text/csv")
+                    backup_submission_to_gcs(encounter_data)
                     counter = st.session_state.counter
 
                     if status in (200, 201):
