@@ -28,7 +28,7 @@ GITHUB_BRANCH = "main"
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 conn = st.connection('gcs', type=FilesConnection)
-df = conn.read("dm_questionary/dm_subs.csv", input_format="csv", ttl=150)
+df = conn.read("dm_questionary/dm_subs.csv", input_format="csv", ttl=60)
 
 def backup_submission_to_csv(encounter_data):
     """
