@@ -1,0 +1,24 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Fighter",
+            "Ranger",
+            "Fighter",
+            "Ranger",
+            "Fighter"
+        ],
+        "party_exp": 5500,
+        "enemies": [
+            "Boar -> 50 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 50.0
+    }
+]
