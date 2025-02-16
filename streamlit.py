@@ -12,9 +12,13 @@ from st_files_connection import FilesConnection
 import csv
 import io
 import pandas as pd
+from google.cloud import storage
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+# Suppress debug/info logs by setting the root logger to ERROR
+logging.basicConfig(level=logging.ERROR)
+logging.getLogger("watchdog").setLevel(logging.WARNING)
+
 
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
@@ -24,7 +28,7 @@ GITHUB_BRANCH = "main"
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 conn = st.connection('gcs', type=FilesConnection)
-df = conn.read("dm_questionary/myfile.csv", input_format="csv", ttl=600)
+df = conn.read("dm_questionary/dm_subs.csv", input_format="csv", ttl=600)
 
 def backup_submission_to_csv(encounter_data):
     """
@@ -181,6 +185,7 @@ precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 st.session_state.setdefault("session_encounters", [])
 st.session_state.setdefault("blocks", False)
+st.session_state.setdefault("new_row", [])
 
 
 if "counter" not in st.session_state:
@@ -208,6 +213,8 @@ def reset_session():
         if key not in keys_to_preserve:
             del st.session_state[key]
     st.session_state.counter = 0
+    conn = st.connection('gcs', type=FilesConnection)
+    df = conn.read("dm_questionary/dm_subs.csv", input_format="csv", ttl=600)
     st.rerun()
  
     
@@ -355,7 +362,9 @@ but at the same time the challenge must not be insurmountable causing frustratio
 </div>
 """, unsafe_allow_html=True)
 
-st.write(df.keys())
+st.write(df)
+print(st.session_state.new_row)
+st.write(st.session_state.new_row)
 
 if "blocks" in st.session_state and st.session_state.blocks:
     simulation_results = []
@@ -477,10 +486,22 @@ else:
                     new_line = json.dumps(encounter_data)
                     st.session_state.session_encounters.append(encounter_data)
                     status, response = push_to_github(new_line)
-                    new_row = pd.DataFrame([encounter_data['expertise'], encounter_data['party'], encounter_data['party_exp'], 
-                                            encounter_data['enemies'], encounter_data['enemy_exp']],
-                                            columns=['expertise', 'party', 'party_exp', 'enemies', 'enemy_exp'])
+                    new_row = pd.DataFrame([[0, encounter_data['expertise'], 
+                          encounter_data['party'], 
+                          encounter_data['party_exp'], 
+                          encounter_data['enemies'], 
+                          encounter_data['enemy_exp']]],
+                        columns=['session_id', 'expertise', 'party', 'party_exp', 'enemies', 'enemy_exp'])
+                    st.session_state.new_row = new_row
+                    print(new_row)
                     df = pd.concat([df, new_row], ignore_index=True)
+                    csv_buffer = df.to_csv(index=False)
+
+                    # Upload to GCS
+                    storage_client = storage.Client()
+                    bucket = storage_client.get_bucket("dm_questionary")
+                    blob = bucket.blob("your-dm_subs.csv")
+                    blob.upload_from_string(csv_buffer, content_type="text/csv")
                     counter = st.session_state.counter
 
                     if status in (200, 201):
