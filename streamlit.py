@@ -24,8 +24,11 @@ st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 conn = st.connection('gcs', type=FilesConnection)
 df = conn.read("dm_questionary/myfile.csv", input_format="csv", ttl=600)
+df['Owner'] = 'Carlo'
+df['Pet'] = 'GesuCristo'
 
-st.write(df.keys())
+
+st.write(df.columns)
 
 exit()
 
