@@ -1,0 +1,27 @@
+[
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Bard",
+            "Monk",
+            "Bard",
+            "Rogue",
+            "Artificer",
+            "Druid",
+            "Bard",
+            "Cleric"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Giant Centipede -> 50 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "Brown Bear -> 200 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "Giant Eagle -> 200 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 900.0
+    }
+]
