@@ -28,7 +28,7 @@ df['Owner'] = 'Carlo'
 df['Pet'] = 'GesuCristo'
 
 
-st.write(df.keys())
+st.write(df)
 
 exit()
 
