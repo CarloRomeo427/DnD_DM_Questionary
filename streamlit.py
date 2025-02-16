@@ -34,13 +34,19 @@ import io
 import datetime
 import random as rnd
 
+conn = st.connection('gcs', type=FilesConnection)
+df = conn.read("dm_questionary/myfile.csv", input_format="csv", ttl=600)
+
 def backup_submission_to_csv(encounter_data):
     """
     Appends a new row to the CSV file in GCS (located at "dm_questionary/myfile.csv").
-    
+
     The first column is the session id (which is the same as st.session_state.git_filename),
     and then each key of the encounter_data JSON is a dedicated column.
     """
+    import pandas as pd
+    from google.cloud import storage
+
     # Use the same session id as git_filename
     if "git_filename" not in st.session_state:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -48,59 +54,55 @@ def backup_submission_to_csv(encounter_data):
         st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
     session_id = st.session_state.git_filename
 
-    # Define the file path in GCS (always the same file)
+    # Prepare the new row: first column is session_id, then each key in encounter_data.
+    new_row = {"session_id": session_id}
+    for key, value in encounter_data.items():
+        if isinstance(value, list):
+            new_row[key] = ";".join(map(str, value))
+        else:
+            new_row[key] = value
+
+    # Define the CSV file path in GCS
     csv_path = "dm_questionary/myfile.csv"
 
-    # Determine the CSV columns: session_id + sorted keys of the encounter data
-    keys = sorted(encounter_data.keys())
-    fieldnames = ["session_id"] + keys
-
-    # Prepare the new row
-    row = {"session_id": session_id}
-    for key in keys:
-        value = encounter_data[key]
-        # If the value is a list, join its items into a semicolon-separated string
-        if isinstance(value, list):
-            row[key] = ";".join(map(str, value))
-        else:
-            row[key] = value
-
-    # Try to read the existing CSV from GCS
+    # Attempt to read the existing CSV file using the connection.
     try:
-        # Read the file in binary mode and decode to a string
-        csv_content = conn.read(csv_path, input_format="binary")
-        csv_str = csv_content.decode("utf-8")
-        csv_file = io.StringIO(csv_str)
-        reader = csv.DictReader(csv_file)
-        existing_rows = list(reader)
-        existing_fieldnames = reader.fieldnames
+        df = conn.read(csv_path, input_format="csv", ttl=600)
+        # If not already a DataFrame, convert it.
+        if not isinstance(df, pd.DataFrame):
+            df = pd.DataFrame(df)
     except Exception as e:
-        # If the file doesn't exist or an error occurs, start with an empty list
-        existing_rows = []
-        existing_fieldnames = None
+        # If the file does not exist or an error occurs, start with an empty DataFrame.
+        df = pd.DataFrame()
 
-    # Create a new CSV content with previous rows plus the new row
-    output = io.StringIO()
-    writer = csv.DictWriter(output, fieldnames=fieldnames)
+    # Create a new DataFrame for the new row.
+    new_df = pd.DataFrame([new_row])
 
-    # Write header if file is new or headers differ from expected
-    if not existing_rows or existing_fieldnames != fieldnames:
-        writer.writeheader()
+    # If the existing DataFrame is not empty, ensure both DataFrames share the same columns.
+    if not df.empty:
+        # Add any missing columns in df (set as empty strings).
+        for col in new_df.columns:
+            if col not in df.columns:
+                df[col] = ""
+        # Add missing columns in new_df (set as empty strings).
+        for col in df.columns:
+            if col not in new_df.columns:
+                new_df[col] = ""
+        # Append the new row to the existing DataFrame.
+        df = pd.concat([df, new_df], ignore_index=True)
+    else:
+        df = new_df
 
-    # Write the existing rows (ensuring all required columns are present)
-    for r in existing_rows:
-        complete_row = {fn: r.get(fn, "") for fn in fieldnames}
-        writer.writerow(complete_row)
+    # Convert the updated DataFrame to a CSV string.
+    csv_buffer = df.to_csv(index=False)
 
-    # Write the new row
-    writer.writerow(row)
-
-    new_csv_str = output.getvalue()
-
-    # Write the updated CSV back to GCS using the underlying filesystem interface
-    with conn.fs.open(csv_path, "w") as f:
-        f.write(new_csv_str)
-
+    # Upload the CSV string back to GCS using the google.cloud.storage client.
+    storage_client = storage.Client()
+    # Here, "dm_questionary" is assumed to be your bucket name and "myfile.csv" is the file name.
+    bucket_name = "dm_questionary"
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob("myfile.csv")
+    blob.upload_from_string(csv_buffer, content_type="text/csv")
 
 def push_to_github(new_line_data):
     """Writes new_line_data (a JSON string representing a dictionary) as an element of an array in a session-specific JSON file.
@@ -363,6 +365,8 @@ but at the same time the challenge must not be insurmountable causing frustratio
 8. Differences in EXP values can make the encounter easier (down to “boring”) or harder (up to “deadly”) for the group.<br>
 </div>
 """, unsafe_allow_html=True)
+
+st.write(df.keys())
 
 if "blocks" in st.session_state and st.session_state.blocks:
     simulation_results = []
