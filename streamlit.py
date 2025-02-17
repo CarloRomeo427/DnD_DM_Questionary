@@ -343,13 +343,14 @@ if st.session_state.blocks:
 
     @st.dialog("Statistics Popup", width="large")
     def show_statistics():
-        st.write("Here are the statistics for the last encounters:")
-        st.write(f"Win probability: {wins}")
-        st.write(f"Rounds number: {rounds}")
-        st.write(f"Player damage: {dmg}")
-        st.write(f"Death number: {deaths}")
-        st.write(f"Team health: {healths}")
-        st.write("If you want to play again, press the Reset Session button below!")
+
+        st.write("Here are the average statistics for the simulated battles:")
+        st.write(f"Win probability: {wins} - Probability of the hero team winning the encounter.")
+        st.write(f"Rounds number: {rounds} - Number of rounds per battle (measures fight duration).")
+        st.write(f"Damage: {dmg} - Average damage dealt per fighter (heroes and enemies).")
+        st.write(f"Total Party Kill: {deaths} - Number of hero deaths per simulation.")
+        st.write(f"Team health: {healths} - Percentage of total HP remaining after battle.")
+        st.write("If you want to play again, press the New Game button below!")
         if st.button("New Game!"):
             reset_session()
 
