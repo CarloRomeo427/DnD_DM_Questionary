@@ -285,7 +285,7 @@ if st.session_state.start == False:
     8. Differences in EXP values can make the encounter easier (down to “boring”) or harder (up to “deadly”) for the group.<br>
     """)
 
-    st.subhead("Select your expertise level as Dungeon Master:")
+    st.subheader("Select your expertise level as Dungeon Master:")
     expertise_levels = [
             "Noob - Still learning what a d20 is",
             "Amateur - Can handle small encounters, but big foes are scary",
