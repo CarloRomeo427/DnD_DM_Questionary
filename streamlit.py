@@ -307,7 +307,7 @@ if st.session_state.blocks:
         reset_session()
 else:
     # --------------------- DESCRIPTION CHECK ---------------------
-    if not st.session_state.has_generated:
+    if st.session_state.generated_party is None:
         # Landing page description (first time the user lands)
         st.subheader("Welcome to the D&D Encounter Generator!")
         st.markdown(
@@ -360,7 +360,7 @@ else:
     if st.session_state.generated_party is not None:
         st.subheader(f"Party EXP: {st.session_state.party_exp}")
 
-        st.session_state.has_generated = True
+        # st.session_state.has_generated = True
 
 
         # Display party members in two columns
