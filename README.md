@@ -1,4 +1,4 @@
-# 🧙‍♂️ D&D Encounter Generation Tester 🐉
+# 🧙‍♂️ D&D Encounter Balance Tester 🐉
 
 ## 📖 About the Project  
 
@@ -61,7 +61,7 @@ The app follows the **official XP budgeting system** from the DMG:
 ## 🎩 **References**  
 
 - **[DnDSimulator](https://github.com/DanielK314/DnDSimulator.git)** – Used to simulate the fights between the random party and the selected encounters. Remember to leave a ⭐ on this incredible project!  
-- **[Dungeons & Dragons: Dungeon Master's Guide 5e (2014)](https://dnd.wizards.com/products/tabletop-games/rpg-products/dungeon-masters-guide)** – The core rulebook for Dungeon Masters, providing guidance on encounter design, world-building, and balancing challenges. This project follows the official XP budgeting system for encounter difficulty as outlined in the DMG.  
+- **[Dungeons & Dragons: Dungeon Master's Guide 5e (2014)](https://dndstore.wizards.com/us/en/product/811470/2014-dungeon-master-s-guide-digital-plus-physical-bundle)** – The core rulebook for Dungeon Masters, providing guidance on encounter design, world-building, and balancing challenges. This project follows the official XP budgeting system for encounter difficulty as outlined in the DMG.  
 - **[Dungeons & Dragons Beyond](https://www.dndbeyond.com/)** – A comprehensive digital toolkit for D&D 5e, including official rules, monster stats, encounter builders, and homebrew content. Used as a reference for game mechanics and encounter-building resources. 
 
 
@@ -71,6 +71,4 @@ The app follows the **official XP budgeting system** from the DMG:
    This project is an independent fan-made tool and is **not affiliated with, endorsed, sponsored, or approved by Wizards of the Coast LLC**. *Dungeons & Dragons* and related materials are trademarks of Wizards of the Coast. All references to game mechanics, rules, and materials are used under fair use for educational and research purposes.  
 
 2. **Data Collection for Research**  
-   To improve encounter balancing and analyze how Dungeon Masters create combat challenges, this project **collects anonymized data** from each submitted encounter. This data is used solely for research purposes to refine encounter generation models and is never shared with third parties. By using this tool, you agree to the collection of **non-personal encounter data** for analytical purposes. From each submission, we are only interested in storing: current party, party XP, selected encounters, encounters XP and DM expertise. Each submission is stored in the [*Humans* folder](https://github.com/CarloRomeo427/DnD_DM_Questionary/tree/main/Humans).
-
-
+   To improve encounter balancing and analyze how Dungeon Masters create combat challenges, this project **collects anonymized data** from each submitted encounter. This data is used solely for research purposes to refine encounter generation models and is never shared with third parties. By using this tool, you agree to the collection of **non-personal encounter data** for analytical purposes. From each submission, we are only interested in storing: current party, party XP, selected encounters, encounters XP and DM expertise. Each submission is stored in the [*Humans folder*](https://github.com/CarloRomeo427/DnD_DM_Questionary/tree/main/Humans).

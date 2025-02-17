@@ -315,7 +315,7 @@ def calculate_party_exp(party, difficulty="deadly"):
     return EXP_THRESHOLDS[difficulty] * len(party)
 
 # --------------------- UI ELEMENTS ---------------------
-st.title("🧙‍♂️ D&D Encounter Generation Tester 🐉")
+st.title("🧙‍♂️ D&D Encounter Balance Tester 🐉")
 
 if st.session_state.blocks:
     # Show simulation results and statistics modal.
