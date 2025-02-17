@@ -318,16 +318,9 @@ else:
             """
         )
         st.subheader("How to play:")
+        
         st.markdown(
             """
-            1. Click the button to generate a random party of adventurers.
-            2. For each party member, view their stats by clicking on the class name.
-            3. All party members are Level 5.
-            4. Based on the party composition, select a team of enemies.
-            5. You can choose up to 8 enemies.
-            6. The tool calculates the total EXP of the enemy team using classic D&D formulas.
-            7. A balanced encounter should have enemy EXP close to the party's EXP.
-
             1. Click the button to generate a random adventuring party.
             2. Each party member is Level 5, with distinct classes, stats, and abilities. Click on a class name to review its details.
             3. Based on the party's composition, select an enemy team (up to 8 creatures).
