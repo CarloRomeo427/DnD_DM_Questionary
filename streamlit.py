@@ -364,9 +364,9 @@ else:
         st.subheader("Welcome to the D&D Encounter Generator!")
         st.markdown(
             """
-            This is a research tool to test your expertise as Dungeon Master in creating balanced encounters for your party! <br>
-            A balanced encounter should be challenging but not deadly for the party. <br>
-            Therefore, given the Party XP the Dungeon Master should select a team of enemies with a similar XP value. <br>
+            This is a research tool to test your expertise as Dungeon Master in creating balanced encounters for your party!
+            A balanced encounter should be challenging but not deadly for the party. 
+            Therefore, given the Party XP the Dungeon Master should select a team of enemies with a similar XP value. 
 
             To simulate the fights and get your statistics as a Dungeon Master, you need to submit 3 times!
 
