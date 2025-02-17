@@ -522,9 +522,7 @@ else:
                         st.rerun()
 
 
-    st.footer("© 2021 - Carlo Romeo - All Rights Reserved")
-    st.subfooter("This tool is for educational purposes only. All D&D content is owned by Wizards of the Coast and this tool is not affiliated with them.")
-    st.subfooter("Source code available on [GitHub](https://github.com/CarloRomeo427/DnD_DM_Questionary.git)")
-    st.subfooter("The user data is stored in the public folder [Humans] and it is used for research purposes only.")
+    st.markdown(f"<div style='position: fixed; bottom: 0; left: 0;'>{zio can bastardo laido}</div>", unsafe_allow_html=True)
+
 
                         
