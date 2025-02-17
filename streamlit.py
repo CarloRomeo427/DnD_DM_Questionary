@@ -263,22 +263,16 @@ def calculate_party_exp(party, difficulty="hard"):
 # --------------------- UI ELEMENTS ---------------------
 st.title("🧙‍♂️ D&D Encounter Generator 🐉")
 
-
-
-
-### POPUP MODAL ###
-if "blocks" in st.session_state and st.session_state.blocks:
+if st.session_state.blocks:
+    # Show simulation results and statistics modal.
     simulation_results = []
-    # For each encounter, run the simulation benchmark
     for encounter in st.session_state.session_encounters:
         party = encounter["party"]
-        # Process enemy selections: remove the default option
         enemy_names = [
             enemy.split("->")[0].strip()
             for enemy in encounter["enemies"]
             if enemy != enemy_options[0]
         ]
-        # Run the simulation
         win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
         simulation_results.append({
             "win_prob": win_prob,
@@ -287,74 +281,85 @@ if "blocks" in st.session_state and st.session_state.blocks:
             "death_num": death_num,
             "team_health": team_health
         })
-    wins = np.round(np.mean([result["win_prob"] for result in simulation_results]), 2)
-    rounds = np.round(np.mean([result["rounds_num"] for result in simulation_results]), 2)
-    dmg = np.round(np.mean([result["dmg_player"] for result in simulation_results]), 2)
-    deaths = np.round(np.mean([result["death_num"] for result in simulation_results]), 2)
-    healths = np.round(np.mean([result["team_health"] for result in simulation_results]), 2)
+    wins = np.round(np.mean([r["win_prob"] for r in simulation_results]), 2)
+    rounds = np.round(np.mean([r["rounds_num"] for r in simulation_results]), 2)
+    dmg = np.round(np.mean([r["dmg_player"] for r in simulation_results]), 2)
+    deaths = np.round(np.mean([r["death_num"] for r in simulation_results]), 2)
+    healths = np.round(np.mean([r["team_health"] for r in simulation_results]), 2)
 
-    show_statistics(wins, rounds, dmg, deaths, healths)
+    @st.dialog("Statistics Popup", width="large")
+    def show_statistics():
+        st.write("Here are the statistics for the last encounters:")
+        st.write(f"Win probability: {wins}")
+        st.write(f"Rounds number: {rounds}")
+        st.write(f"Player damage: {dmg}")
+        st.write(f"Death number: {deaths}")
+        st.write(f"Team health: {healths}")
+        st.write("If you want to play again, press the Reset Session button below!")
+        if st.button("New Game!"):
+            reset_session()
 
+    show_statistics()
     st.markdown("---")
     if st.button("🔄 Reset Game"):
         reset_session()
-
 else:
-
-    if st.session_state.start == False:
-
+    # --------------------- DESCRIPTION CHECK ---------------------
+    if not st.session_state.has_generated:
+        # Landing page description (first time the user lands)
         st.subheader("Welcome to the D&D Encounter Generator!")
-        st.markdown("""
-        This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!<br><br>
-        A balanced encounter should be challenging but not deadly for the party! 
-        Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.<br><br>
-        We are trying to reproduce the concept of flow in the game, where the group is challenged to keep the level of attention high 
-        but at the same time the challenge must not be insurmountable causing frustration in the player to the point of quitting. <br><br>""")
-
+        st.markdown(
+            """
+            This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!
+            A balanced encounter should be challenging but not deadly for the party!
+            Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.
+            """
+        )
         st.subheader("How to play:")
-        st.markdown("""
-        1. Click the button to generate a random party of adventurers.<br>
-        2. For each party member, you can view their stats and abilities by clicking on the class name.<br>
-        3. All party members are Level 5.<br>
-        4. Based on the party composition, select a team of enemies to challenge them.<br>
-        5. You can choose up to 8 enemies to fight against the party.<br>
-        6. The tool calculates the total EXP of the enemy team using the classic formula as in the official Dungeon Master Guide.<br>
-        7. A balanced encounter should have an enemy EXP value close to the party EXP value.<br>
-        8. Differences in EXP values can make the encounter easier (down to “boring”) or harder (up to “deadly”) for the group.<br>
-        """)
-
+        st.markdown(
+            """
+            1. Click the button to generate a random party of adventurers.
+            2. For each party member, view their stats by clicking on the class name.
+            3. All party members are Level 5.
+            4. Based on the party composition, select a team of enemies.
+            5. You can choose up to 8 enemies.
+            6. The tool calculates the total EXP of the enemy team using classic D&D formulas.
+            7. A balanced encounter should have enemy EXP close to the party's EXP.
+            """
+        )
         st.subheader("Select your expertise level as Dungeon Master:")
         expertise_levels = [
-                "Noob - Still learning what a d20 is",
-                "Amateur - Can handle small encounters, but big foes are scary",
-                "Skilled - Runs epic battles with minimal confusion",
-                "Expert - NPC voices so good, players forget it's you",
-                "Legendary - Godlike storyteller, even Tiamat takes notes"
-            ]
-
+            "Noob - Still learning what a d20 is",
+            "Amateur - Can handle small encounters, but big foes are scary",
+            "Skilled - Runs epic battles with minimal confusion",
+            "Expert - NPC voices so good, players forget it's you",
+            "Legendary - Godlike storyteller, even Tiamat takes notes"
+        ]
         st.session_state.selected_expertise = st.selectbox("Choose your expertise level:", expertise_levels)
         st.markdown("---")
-    
     else:
+        # After the first encounter is generated, show the new description.
         st.subheader("🎲 D&D Encounter Generator 🎲")
-        st.markdown("""
-        The party is ready to face the next challenge! Select the enemies to fight against the party and press the Submit Decision button to save the encounter data.
-        """)
+        st.markdown(
+            """
+            The party is ready to face the next challenge!
+            Select the enemies to fight against the party and press the Submit Decision button to save the encounter data.
+            """
+        )
 
-
-
-    # --------------------- ENCOUNTER GENERATION ---------------------
+    # --------------------- ENCOUNTER GENERATION BUTTON ---------------------
     col_gen, col_counter = st.columns([3, 1])
-    with col_gen:  
-        st.button("🎲 Generate Encounter", on_click=generate_encounter,
-            disabled=st.session_state.blocks)
+    with col_gen:
+        st.button("🎲 Generate Encounter", on_click=generate_encounter, disabled=st.session_state.blocks)
     with col_counter:
-        st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter,)
-        
+        st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter)
+
+    # --------------------- DISPLAY GENERATED PARTY & ENEMY SELECTION ---------------------
     if st.session_state.generated_party is not None:
+        st.subheader(f"Party EXP: {st.session_state.party_exp}")
 
         st.session_state.start = True
-        st.subheader(f"Party EXP: {st.session_state.party_exp}")
+
 
         # Display party members in two columns
         col_party1, col_party2 = st.columns(2)
