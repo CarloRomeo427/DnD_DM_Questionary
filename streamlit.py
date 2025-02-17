@@ -108,6 +108,7 @@ precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 st.session_state.setdefault("session_encounters", [])
 st.session_state.setdefault("blocks", False)
+st.session_state.setdefault("start", False)
 
 
 if "counter" not in st.session_state:
@@ -260,203 +261,191 @@ def calculate_party_exp(party, difficulty="hard"):
     return EXP_THRESHOLDS[difficulty] * len(party)
 
 # --------------------- UI ELEMENTS ---------------------
-st.title("🧙 D&D Encounter Generator")
+st.title("🧙‍♂️ D&D Encounter Generator 🐉")
 
-st.markdown("""
-<div class="description-box">
-<b>Welcome to the D&D Encounter Generator!</b><br>
-This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!<br><br>
-A balanced encounter should be challenging but not deadly for the party! 
-Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.<br><br>
-We are trying to reproduce the concept of flow in the game, where the group is challenged to keep the level of attention high 
-but at the same time the challenge must not be insurmountable causing frustration in the player to the point of quitting. <br><br>
-<b>How the tool works:</b><br>
-1. Click the button to generate a random party of adventurers.<br>
-2. For each party member, you can view their stats and abilities by clicking on the class name.<br>
-3. All party members are Level 5.<br>
-4. Based on the party composition, select a team of enemies to challenge them.<br>
-5. You can choose up to 8 enemies to fight against the party.<br>
-6. The tool calculates the total EXP of the enemy team using the classic formula as in the official Dungeon Master Guide.<br>
-7. A balanced encounter should have an enemy EXP value close to the party EXP value.<br>
-8. Differences in EXP values can make the encounter easier (down to “boring”) or harder (up to “deadly”) for the group.<br>
-</div>
-""", unsafe_allow_html=True)
+if st.session_state.start == False:
 
-if "blocks" in st.session_state and st.session_state.blocks:
-    simulation_results = []
-    # For each encounter, run the simulation benchmark
-    for encounter in st.session_state.session_encounters:
-        party = encounter["party"]
-        # Process enemy selections: remove the default option
-        enemy_names = [
-            enemy.split("->")[0].strip()
-            for enemy in encounter["enemies"]
-            if enemy != enemy_options[0]
+    st.subheader("Welcome to the D&D Encounter Generator!")
+    st.markdown("""
+    This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!<br><br>
+    A balanced encounter should be challenging but not deadly for the party! 
+    Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.<br><br>
+    We are trying to reproduce the concept of flow in the game, where the group is challenged to keep the level of attention high 
+    but at the same time the challenge must not be insurmountable causing frustration in the player to the point of quitting. <br><br>""")
+
+    st.subheader("How to play:")
+    st.markdown("""
+    1. Click the button to generate a random party of adventurers.<br>
+    2. For each party member, you can view their stats and abilities by clicking on the class name.<br>
+    3. All party members are Level 5.<br>
+    4. Based on the party composition, select a team of enemies to challenge them.<br>
+    5. You can choose up to 8 enemies to fight against the party.<br>
+    6. The tool calculates the total EXP of the enemy team using the classic formula as in the official Dungeon Master Guide.<br>
+    7. A balanced encounter should have an enemy EXP value close to the party EXP value.<br>
+    8. Differences in EXP values can make the encounter easier (down to “boring”) or harder (up to “deadly”) for the group.<br>
+    """)
+
+    st.subhead("Select your expertise level as Dungeon Master:")
+    expertise_levels = [
+            "Noob - Still learning what a d20 is",
+            "Amateur - Can handle small encounters, but big foes are scary",
+            "Skilled - Runs epic battles with minimal confusion",
+            "Expert - NPC voices so good, players forget it's you",
+            "Legendary - Godlike storyteller, even Tiamat takes notes"
         ]
-        # Run the simulation
-        win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
-        simulation_results.append({
-            "win_prob": win_prob,
-            "rounds_num": rounds_num,
-            "dmg_player": dmg_player,
-            "death_num": death_num,
-            "team_health": team_health
-        })
-    wins = np.round(np.mean([result["win_prob"] for result in simulation_results]), 2)
-    rounds = np.round(np.mean([result["rounds_num"] for result in simulation_results]), 2)
-    dmg = np.round(np.mean([result["dmg_player"] for result in simulation_results]), 2)
-    deaths = np.round(np.mean([result["death_num"] for result in simulation_results]), 2)
-    healths = np.round(np.mean([result["team_health"] for result in simulation_results]), 2)
 
-    show_statistics(wins, rounds, dmg, deaths, healths)
-
+    st.session_state.selected_expertise = st.selectbox("Choose your expertise level:", expertise_levels)
     st.markdown("---")
-    if st.button("🔄 Reset Game"):
-        reset_session()
 
 else:
 
-    # --------------------- DM EXPERTISE SELECTION ---------------------
-    expertise_levels = [
-        "Noob - Still learning what a d20 is",
-        "Amateur - Can handle small encounters, but big foes are scary",
-        "Skilled - Runs epic battles with minimal confusion",
-        "Expert - NPC voices so good, players forget it's you",
-        "Legendary - Godlike storyteller, even Tiamat takes notes"
-    ]
+    
 
-    st.subheader("Expertise as DM")
-    selected_expertise = st.selectbox("Choose your expertise level:", expertise_levels)
-    st.markdown("---")
+    
+    ### POPUP MODAL ###
+    if "blocks" in st.session_state and st.session_state.blocks:
+        simulation_results = []
+        # For each encounter, run the simulation benchmark
+        for encounter in st.session_state.session_encounters:
+            party = encounter["party"]
+            # Process enemy selections: remove the default option
+            enemy_names = [
+                enemy.split("->")[0].strip()
+                for enemy in encounter["enemies"]
+                if enemy != enemy_options[0]
+            ]
+            # Run the simulation
+            win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
+            simulation_results.append({
+                "win_prob": win_prob,
+                "rounds_num": rounds_num,
+                "dmg_player": dmg_player,
+                "death_num": death_num,
+                "team_health": team_health
+            })
+        wins = np.round(np.mean([result["win_prob"] for result in simulation_results]), 2)
+        rounds = np.round(np.mean([result["rounds_num"] for result in simulation_results]), 2)
+        dmg = np.round(np.mean([result["dmg_player"] for result in simulation_results]), 2)
+        deaths = np.round(np.mean([result["death_num"] for result in simulation_results]), 2)
+        healths = np.round(np.mean([result["team_health"] for result in simulation_results]), 2)
 
-
-
-
-    # --------------------- ENCOUNTER GENERATION ---------------------
-    col_gen, col_counter = st.columns([3, 1])
-    with col_gen:  
-        st.button("🎲 Generate Encounter", on_click=generate_encounter,
-            disabled=st.session_state.blocks)
-    with col_counter:
-        st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter,)
-        
-    if st.session_state.generated_party is not None:
-        st.subheader(f"Party EXP: {st.session_state.party_exp}")
-
-        # Display party members in two columns
-        col_party1, col_party2 = st.columns(2)
-        party_cols = [col_party1, col_party2]
-
-        for i, cls in enumerate(st.session_state.generated_class_names):
-            col_index = i % 2
-            with party_cols[col_index].expander(f"{cls}", expanded=False):
-                class_features = get_class_features(cls, "Classes/")
-                st.markdown("**LvL:** 5")
-                for key, value in class_features.items():
-                    if isinstance(value, list):
-                        st.markdown(f"**{key}:**")
-                        for v in value:
-                            st.markdown(f"- {v}")
-                    else:
-                        st.markdown(f"**{key}:** {value}")
+        show_statistics(wins, rounds, dmg, deaths, healths)
 
         st.markdown("---")
-        st.subheader("Build the Enemy Encounter Team!")
+        if st.button("🔄 Reset Game"):
+            reset_session()
 
-        # Enemy selection in two columns
-        col_enemy1, col_enemy2 = st.columns(2)
-        enemy_cols = [col_enemy1, col_enemy2]
+    else:
 
-        selected_enemies = []
-        for i in range(8):
-            col_index = i % 2
-            with enemy_cols[col_index]:
-                slot_label = f"Enemy {i+1}"
-                choice = st.selectbox(slot_label, enemy_options, index=0, key=f"enemy_{i+1}")
-                selected_enemies.append(choice)
+        # TODO: move this with the initial description and make it persistent throughout the session
+        # --------------------- DM EXPERTISE SELECTION ---------------------
         
-        enemy_total_exp = compute_enemy_exp(selected_enemies)
-        st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
 
-        col_sub, col_res = st.columns([3, 1])
-        with col_res:
-            if st.button("🔄 Reset Game"):
-                reset_session()
 
-        with col_sub:
-            if st.button("✅ Submit Decision", ):
-                # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
-                if not any(choice != enemy_options[0] for choice in selected_enemies):
-                    st.warning(
-                        "Please, to submit you have at least to pick one enemy encounter or, if you do not like the current Party Members, generate a new party by pressing the Generate Encounter button!"
-                    )
-                else:
-                    st.session_state.counter += 1
-                    encounter_data = {
-                        "expertise": selected_expertise,
-                        "party": list(st.session_state.generated_class_names),
-                        "party_exp": st.session_state.party_exp,
-                        "enemies": selected_enemies,
-                        "enemy_exp": enemy_total_exp
-                    }
-                    new_line = json.dumps(encounter_data)
-                    st.session_state.session_encounters.append(encounter_data)
-                    status, response = push_to_github(new_line)
-                    counter = st.session_state.counter
 
-                    if status in (200, 201):
-                        st.success("✅ Data successfully uploaded to GitHub!")
-                        print("✅ Data successfully uploaded to GitHub!")
+
+        # --------------------- ENCOUNTER GENERATION ---------------------
+        col_gen, col_counter = st.columns([3, 1])
+        with col_gen:  
+            st.button("🎲 Generate Encounter", on_click=generate_encounter,
+                disabled=st.session_state.blocks)
+        with col_counter:
+            st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter,)
+            
+        if st.session_state.generated_party is not None:
+
+            st.session_state.start = True
+            st.subheader(f"Party EXP: {st.session_state.party_exp}")
+
+            # Display party members in two columns
+            col_party1, col_party2 = st.columns(2)
+            party_cols = [col_party1, col_party2]
+
+            for i, cls in enumerate(st.session_state.generated_class_names):
+                col_index = i % 2
+                with party_cols[col_index].expander(f"{cls}", expanded=False):
+                    class_features = get_class_features(cls, "Classes/")
+                    st.markdown("**LvL:** 5")
+                    for key, value in class_features.items():
+                        if isinstance(value, list):
+                            st.markdown(f"**{key}:**")
+                            for v in value:
+                                st.markdown(f"- {v}")
+                        else:
+                            st.markdown(f"**{key}:** {value}")
+
+            st.markdown("---")
+            st.subheader("Build the Enemy Encounter Team!")
+
+            # Enemy selection in two columns
+            col_enemy1, col_enemy2 = st.columns(2)
+            enemy_cols = [col_enemy1, col_enemy2]
+
+            selected_enemies = []
+            for i in range(8):
+                col_index = i % 2
+                with enemy_cols[col_index]:
+                    slot_label = f"Enemy {i+1}"
+                    choice = st.selectbox(slot_label, enemy_options, index=0, key=f"enemy_{i+1}")
+                    selected_enemies.append(choice)
+            
+            enemy_total_exp = compute_enemy_exp(selected_enemies)
+            st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
+
+            col_sub, col_res = st.columns([3, 1])
+            with col_res:
+                if st.button("🔄 Reset Game"):
+                    reset_session()
+
+            with col_sub:
+                if st.button("✅ Submit Decision", ):
+                    # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
+                    if not any(choice != enemy_options[0] for choice in selected_enemies):
+                        st.warning(
+                            "Please, to submit you have at least to pick one enemy encounter or, if you do not like the current Party Members, generate a new party by pressing the Generate Encounter button!"
+                        )
                     else:
-                        st.error(f"❌ Failed to upload data: {response}")
-                        print(f"❌ Failed to upload data: {response}")
+                        st.session_state.counter += 1
+                        encounter_data = {
+                            "expertise": st.session_state.selected_expertise,
+                            "party": list(st.session_state.generated_class_names),
+                            "party_exp": st.session_state.party_exp,
+                            "enemies": selected_enemies,
+                            "enemy_exp": enemy_total_exp
+                        }
+                        new_line = json.dumps(encounter_data)
+                        st.session_state.session_encounters.append(encounter_data)
+                        status, response = push_to_github(new_line)
+                        counter = st.session_state.counter
 
-                    # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
-                    for key in list(st.session_state.keys()):
-                        if key not in ["counter", "git_filename", "parties", "enemies", "session_encounters", "blocks"]:
-                            del st.session_state[key]
-                    st.session_state.counter = counter
+                        if status in (200, 201):
+                            st.success("✅ Data successfully uploaded to GitHub!")
+                            print("✅ Data successfully uploaded to GitHub!")
+                        else:
+                            st.error(f"❌ Failed to upload data: {response}")
+                            print(f"❌ Failed to upload data: {response}")
 
-                    # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-                    if st.session_state.counter < 2:
-                        # Clear the current party so that a new one is generated on the next run.
-                        st.session_state.generated_party = None
-                        st.session_state.generated_class_names = None
-                        st.session_state.party_exp = 0
-                        # Clear enemy selection keys so the selectboxes reset to default.
-                        for i in range(1, 9):
-                            if f"enemy_{i}" in st.session_state:
-                                del st.session_state[f"enemy_{i}"]
-                        st.rerun()
-                    # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
-                    else:
-                        st.session_state.is_locked = True
-                        st.session_state.blocks = True
-                        st.rerun()
-                        # st.info("5 encounters submitted. Running simulations for all encounters…")
-                        # simulation_results = []
-                        # # For each encounter, run the simulation benchmark
-                        # for encounter in st.session_state.session_encounters:
-                        #     party = encounter["party"]
-                        #     # Process enemy selections: remove the default option
-                        #     enemy_names = [
-                        #         enemy.split("->")[0].strip()
-                        #         for enemy in encounter["enemies"]
-                        #         if enemy != enemy_options[0]
-                        #     ]
-                        #     # Run the simulation
-                        #     win_prob, rounds_num, dmg_player, death_num, team_health = benchmark(party, enemy_names, verbose=False)
-                        #     simulation_results.append({
-                        #         "win_prob": win_prob,
-                        #         "rounds_num": rounds_num,
-                        #         "dmg_player": dmg_player,
-                        #         "death_num": death_num,
-                        #         "team_health": team_health
-                        #     })
-                        # wins = np.round(np.mean([result["win_prob"] for result in simulation_results]), 2)
-                        # rounds = np.round(np.mean([result["rounds_num"] for result in simulation_results]), 2)
-                        # dmg = np.round(np.mean([result["dmg_player"] for result in simulation_results]), 2)
-                        # deaths = np.round(np.mean([result["death_num"] for result in simulation_results]), 2)
-                        # healths = np.round(np.mean([result["team_health"] for result in simulation_results]), 2)
+                        # Clear all session state keys except 'counter' and 'git_filename' so the same session file is used
+                        for key in list(st.session_state.keys()):
+                            if key not in ["counter", "git_filename", "parties", "enemies", "session_encounters", "blocks"]:
+                                del st.session_state[key]
+                        st.session_state.counter = counter
 
-                        # show_statistics(wins, rounds, dmg, deaths, healths)
+                        # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
+                        if st.session_state.counter < 2:
+                            # Clear the current party so that a new one is generated on the next run.
+                            st.session_state.generated_party = None
+                            st.session_state.generated_class_names = None
+                            st.session_state.party_exp = 0
+                            # Clear enemy selection keys so the selectboxes reset to default.
+                            for i in range(1, 9):
+                                if f"enemy_{i}" in st.session_state:
+                                    del st.session_state[f"enemy_{i}"]
+                            st.rerun()
+                        # If 5 encounters have been submitted, run simulations and show a fullscreen modal popup.
+                        else:
+                            st.session_state.is_locked = True
+                            st.session_state.blocks = True
+                            st.rerun()
+
+                            
