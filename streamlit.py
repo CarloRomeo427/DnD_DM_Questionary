@@ -316,6 +316,9 @@ else:
             This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!
             A balanced encounter should be challenging but not deadly for the party.
             Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.
+
+            To simulate the fights and get your statistics as a Dungeon Master, you need to submit 3 times!
+            Good luck and have fun!
             """
         )
         st.subheader("How to play:")
@@ -332,6 +335,8 @@ else:
                - Just Right? The battle feels intense but winnable, requiring teamwork and strategy.
             """
         )
+
+        
         st.subheader("Select your expertise level as Dungeon Master:")
         expertise_levels = [
             "Noob - Still learning what a d20 is",
@@ -498,7 +503,7 @@ else:
                     st.session_state.counter = counter
 
                     # If fewer than 5 encounters have been submitted, reset party and enemy selections for a new encounter.
-                    if st.session_state.counter < 2:
+                    if st.session_state.counter < 3:
                         # Clear the current party so that a new one is generated on the next run.
                         st.session_state.generated_party = None
                         st.session_state.generated_class_names = None
