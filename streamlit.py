@@ -47,7 +47,8 @@ footer = """
 }
 </style>
 <div class="footer">
-    Not affiliated with or endorsed by Wizards of the Coast. For research and educational purposes only.
+    Not affiliated with or endorsed by Wizards of the Coast. <br>
+    For research and educational purposes only.
 </div>
 """
 st.markdown(footer, unsafe_allow_html=True)
