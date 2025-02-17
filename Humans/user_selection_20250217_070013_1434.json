@@ -18,5 +18,26 @@
             "None -> 0 EXP"
         ],
         "enemy_exp": 1800.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Artificer",
+            "Cleric",
+            "Fighter",
+            "Wizard"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "Fire Elemental -> 1800 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 1800.0
     }
 ]
