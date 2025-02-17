@@ -23,27 +23,34 @@ st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # --------------------- FOOTER ---------------------
 footer = """
-    <style>
-    .footer {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background-color: #f1f1f1;
-        color: #333;
-        text-align: center;
-        padding: 10px 0;
-        font-size: 0.9em;
-    }
-    </style>
-    <div class="footer">
-        Made by [Carlo Romeo](https://github.com/CarloRomeo427/DnD_DM_Questionary.git) for the Dungeons & Dragons community with ❤️.
-
-        Not affiliated with or endorsed by Wizards of the Coast.
-
-        The simulator is based on the implementation of [DanielK314](https://github.com/DanielK314/DnDSimulator.git), give him a star! 
-    </div>
-    """
+<style>
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #f1f1f1;
+    color: #333;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9em;
+}
+.footer a {
+    color: #007BFF;
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+</style>
+<div class="footer">
+    Made by <a href="https://github.com/CarloRomeo427/DnD_DM_Questionary.git" target="_blank">Carlo Romeo</a> 
+    for the Dungeons & Dragons community with ❤️.<br>
+    Not affiliated with or endorsed by Wizards of the Coast.<br>
+    The simulator is based on the implementation of 
+    <a href="https://github.com/DanielK314/DnDSimulator.git" target="_blank">DanielK314</a>, give him a star! 
+</div>
+"""
 st.markdown(footer, unsafe_allow_html=True)
 
 def push_to_github(new_line_data):
