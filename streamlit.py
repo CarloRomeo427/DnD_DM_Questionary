@@ -345,7 +345,7 @@ else:
     else:
         # After the first encounter is generated, show the new description.
         
-        st.markdown("# 🧾 Encounter Balancing: Key Concepts")
+        st.markdown("### 🧾 Encounter Balancing: Key Concepts")
 
         st.write("""
         When designing encounters, keep in mind the **official XP guidelines** from the *Dungeon Master’s Guide (DMG)*.
@@ -353,7 +353,7 @@ else:
         """)
 
         # Step 1: Calculate Party Thresholds
-        st.markdown("## **Step 1: Calculate Party Thresholds**")
+        st.markdown("### **Step 1: Calculate Party Thresholds**")
 
         st.write("""
         Each adventurer level has **four XP thresholds** that determine the difficulty of an encounter:
@@ -377,7 +377,7 @@ else:
         # """)
 
         # Step 2: Apply Encounter Multipliers
-        st.markdown("## **Step 2: Apply the Encounter Multiplier**")
+        st.markdown("### **Step 2: Apply the Encounter Multiplier**")
 
         st.write("""
         The **number of enemies** affects difficulty beyond their raw XP values.
@@ -385,7 +385,7 @@ else:
         The DMG provides an **XP multiplier** to account for this:
         """)
 
-        st.markdown("### **Encounter XP Multipliers**")
+        st.markdown("#### **Encounter XP Multipliers**")
         st.table({
             "Number of Enemies": ["1", "2", "3–6", "7–10", "11–14", "15+"],
             "XP Multiplier": ["×1", "×1.5", "×2", "×2.5", "×3", "×4"]
@@ -399,7 +399,7 @@ else:
         """)
 
         # Step 3: Adjust and Fine-Tune
-        st.markdown("## **Step 3: Adjust and Fine-Tune**")
+        st.markdown("### **Step 3: Adjust and Fine-Tune**")
 
         st.write("""
         - **Fewer, stronger enemies** (e.g., one big boss or a couple of elite foes) make for **high-risk, high-reward** fights.
