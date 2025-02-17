@@ -521,8 +521,28 @@ else:
                         st.session_state.blocks = True
                         st.rerun()
 
-    version_number = "DIO PORCOOOOOOOO"
-    st.markdown(f"<div style='position: fixed; bottom: 0; left: 0;'>{version_number}</div>", unsafe_allow_html=True)
+    footer = """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #f1f1f1;
+        color: #333;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 0.9em;
+    }
+    </style>
+    <div class="footer">
+        Made with ❤️ by Your Name - © 2025
+    </div>
+    """
+    st.markdown(footer, unsafe_allow_html=True)
+
+
+    
 
 
                         
