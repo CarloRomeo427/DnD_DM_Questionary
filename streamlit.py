@@ -28,7 +28,7 @@ footer = """
     position: fixed;
     left: 0;
     bottom: 0;
-    width: 25%;
+    width: 50%;
     background-color: rgba(241, 241, 241, 0.95); /* Slight transparency */
     color: #333;
     text-align: left;
@@ -47,7 +47,7 @@ footer = """
 }
 </style>
 <div class="footer">
-    Not affiliated with or endorsed by Wizards of the Coast. <br>
+    Not affiliated with or endorsed by Wizards of the Coast.
     For research and educational purposes only.
 </div>
 """
