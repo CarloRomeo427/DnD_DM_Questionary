@@ -361,7 +361,7 @@ else:
     # --------------------- DESCRIPTION CHECK ---------------------
     if st.session_state.start is False:
         # Landing page description (first time the user lands)
-        st.subheader("Welcome to the D&D Encounter Generator!")
+        st.subheader("Test your skills as a Dungeon Master!")
         st.markdown(
             """
             This is a research tool to test your expertise as Dungeon Master in creating balanced encounters for your party!
@@ -420,7 +420,7 @@ else:
         - **Hard:** A dangerous fight where players must strategize 
         - **Deadly:** A fight that could result in **character deaths** if they make poor choices or get unlucky.
                  
-        The tool uses the **Hard** threshold as the default for party XP and adjusts the multiplier based on the random party generated.
+        The tool sets the Deadly threshold as the default party XP, aiming to create a true challenge. However, be cautious—push too hard, and you might wipe out the entire party!
         """)
 
         # st.markdown("### **XP Thresholds for a Level 5 Party**")
