@@ -29,13 +29,14 @@ footer = """
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: rgba(241, 241, 241, 0.95); /* Slight transparency for a subtle effect */
+    background-color: rgba(241, 241, 241, 0.95); /* Slight transparency */
     color: #333;
-    text-align: center;
-    padding: 10px 10px;
-    font-size: 0.5em;
-    z-index: 1000; /* Ensures it stays on top */
-    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2); /* Adds a slight shadow to separate it from the content */
+    text-align: left;
+    padding: 3px 5px;  /* Smaller padding to reduce thickness */
+    font-size: 0.7em;  /* Adjust font size for a smaller appearance */
+    line-height: 1;  /* Reduce line height for compactness */
+    z-index: 1000;  /* Ensures it stays on top */
+    box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.2); /* Softer shadow */
 }
 .footer a {
     color: #007BFF;
@@ -50,6 +51,7 @@ footer = """
 </div>
 """
 st.markdown(footer, unsafe_allow_html=True)
+
 
 
 def push_to_github(new_line_data):
