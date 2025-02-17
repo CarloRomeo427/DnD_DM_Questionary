@@ -12,6 +12,31 @@ from simulate import benchmark
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+# --------------------- FOOTER ---------------------
+footer = """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #f1f1f1;
+        color: #333;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 0.9em;
+    }
+    </style>
+    <div class="footer">
+        Made by [Carlo Romeo](https://github.com/CarloRomeo427/DnD_DM_Questionary.git) for the Dungeons & Dragons community with ❤️.
+
+        Not affiliated with or endorsed by Wizards of the Coast.
+
+        The simulator is based on the implementation of [DanielK314](https://github.com/DanielK314/DnDSimulator.git), give him a star! 
+    </div>
+    """
+st.markdown(footer, unsafe_allow_html=True)
+
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
 GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
@@ -521,25 +546,7 @@ else:
                         st.session_state.blocks = True
                         st.rerun()
 
-    footer = """
-    <style>
-    .footer {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background-color: #f1f1f1;
-        color: #333;
-        text-align: center;
-        padding: 10px 0;
-        font-size: 0.9em;
-    }
-    </style>
-    <div class="footer">
-        Made with ❤️ by Your Name - © 2025
-    </div>
-    """
-    st.markdown(footer, unsafe_allow_html=True)
+    
 
 
     
