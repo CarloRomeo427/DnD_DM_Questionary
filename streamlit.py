@@ -419,7 +419,7 @@ else:
     with col_gen:
         st.button("🎲 Generate Encounter 🎲", on_click=generate_encounter, disabled=st.session_state.blocks)
     with col_counter:
-        st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter)
+        st.metric(label="MISSING SUBMISSIONS FOR THE FIGHT!!!", value=int(3 - st.session_state.counter))
 
     # --------------------- DISPLAY GENERATED PARTY & ENEMY SELECTION ---------------------
     if st.session_state.generated_party is not None:
