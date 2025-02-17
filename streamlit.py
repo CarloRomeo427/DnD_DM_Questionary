@@ -522,7 +522,7 @@ else:
                         st.rerun()
 
     version_number = "DIO PORCOOOOOOOO"
-    st.markdown(f"<div style='position: fixed; bottom: 0; left: 0; text-align=center'>{version_number}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='position: fixed; bottom: 0; left: 0;'>{version_number}</div>", unsafe_allow_html=True)
 
 
                         
