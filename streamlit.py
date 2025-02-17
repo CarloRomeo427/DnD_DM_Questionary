@@ -33,7 +33,7 @@ footer = """
     color: #333;
     text-align: center;
     padding: 10px 10px;
-    font-size: 0.9em;
+    font-size: 0.5em;
     z-index: 1000; /* Ensures it stays on top */
     box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2); /* Adds a slight shadow to separate it from the content */
 }
@@ -46,7 +46,7 @@ footer = """
 }
 </style>
 <div class="footer">
-    Not affiliated with or endorsed by Wizards of the Coast.
+    Not affiliated with or endorsed by Wizards of the Coast. For research and educational purposes only.
 </div>
 """
 st.markdown(footer, unsafe_allow_html=True)
