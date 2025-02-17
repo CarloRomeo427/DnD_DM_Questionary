@@ -28,7 +28,7 @@ footer = """
     position: fixed;
     left: 0;
     bottom: 0;
-    width: 100%;
+    width: 50%;
     background-color: rgba(241, 241, 241, 0.95); /* Slight transparency */
     color: #333;
     text-align: left;
