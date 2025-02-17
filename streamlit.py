@@ -29,11 +29,13 @@ footer = """
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #f1f1f1;
+    background-color: rgba(241, 241, 241, 0.95); /* Slight transparency for a subtle effect */
     color: #333;
     text-align: center;
-    padding: 10px 0;
+    padding: 10px 10px;
     font-size: 0.9em;
+    z-index: 1000; /* Ensures it stays on top */
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2); /* Adds a slight shadow to separate it from the content */
 }
 .footer a {
     color: #007BFF;
@@ -45,13 +47,14 @@ footer = """
 </style>
 <div class="footer">
     Made by <a href="https://github.com/CarloRomeo427/DnD_DM_Questionary.git" target="_blank">Carlo Romeo</a> 
-    for the Dungeons & Dragons community with ❤️.<br>
+    for the Dungeons & Dragons community with ❤️.<br> 
     Not affiliated with or endorsed by Wizards of the Coast.<br>
     The simulator is based on the implementation of 
     <a href="https://github.com/DanielK314/DnDSimulator.git" target="_blank">DanielK314</a>, give him a star! 
 </div>
 """
 st.markdown(footer, unsafe_allow_html=True)
+
 
 def push_to_github(new_line_data):
     """Writes new_line_data (a JSON string representing a dictionary) as an element of an array in a session-specific JSON file.
