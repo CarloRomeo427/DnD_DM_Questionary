@@ -108,10 +108,10 @@ precomputed_class_names = data["class_names"]
 party_indices = list(data["indices"])
 st.session_state.setdefault("session_encounters", [])
 st.session_state.setdefault("blocks", False)
-st.session_state.setdefault("start", False)
+# st.session_state.setdefault("start", False)
 
-if "has_generated" not in st.session_state:
-    st.session_state.has_generated = False
+if "start" not in st.session_state:
+    st.session_state.start = False
 
 if "counter" not in st.session_state:
     st.session_state.counter = 0
@@ -165,6 +165,7 @@ def get_next_party_matrix():
 def generate_encounter():
     st.session_state.generated_party, st.session_state.generated_class_names = get_next_party_matrix()
     st.session_state.party_exp = calculate_party_exp(st.session_state.generated_class_names, "hard")
+    st.session_state.start = True
     
 
 def extract_feature_constants(class_files_path):
@@ -307,7 +308,7 @@ if st.session_state.blocks:
         reset_session()
 else:
     # --------------------- DESCRIPTION CHECK ---------------------
-    if st.session_state.generated_party is None:
+    if st.session_state.start is False:
         # Landing page description (first time the user lands)
         st.subheader("Welcome to the D&D Encounter Generator!")
         st.markdown(
