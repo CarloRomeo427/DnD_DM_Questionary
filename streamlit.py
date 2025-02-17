@@ -521,8 +521,8 @@ else:
                         st.session_state.blocks = True
                         st.rerun()
 
-
-    st.markdown(f"<div style='position: fixed; bottom: 0; left: 0;'>{zio can bastardo laido}</div>", unsafe_allow_html=True)
+    version_number = "DIO PORCOOOOOOOO"
+    st.markdown(f"<div style='position: fixed; bottom: 0; left: 0;'>{version_number}</div>", unsafe_allow_html=True)
 
 
                         
