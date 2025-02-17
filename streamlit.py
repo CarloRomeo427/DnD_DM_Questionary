@@ -521,34 +521,8 @@ else:
                         st.session_state.blocks = True
                         st.rerun()
 
-    # Add CSS for centered footer
-    st.markdown(
-        """
-        <style>
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            padding: 10px;
-            background-color: #f0f2f6;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-    # Add centered version number as footer
-    version_number = "1.0.0"  # Replace with your actual version number
-    st.markdown(
-        f"""
-        <div class="footer">
-            {version_number}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    version_number = "DIO PORCOOOOOOOO"
+    st.markdown(f"<div style='position: fixed; bottom: 0; left: 0; text-align=center'>{version_number}</div>", unsafe_allow_html=True)
 
 
-# --------------------- DEBUGGING ---------------------    
+                        
