@@ -360,7 +360,7 @@ else:
     if st.session_state.generated_party is not None:
         st.subheader(f"Party EXP: {st.session_state.party_exp}")
 
-        st.session_state.start = True
+        st.session_state.has_generated = True
 
 
         # Display party members in two columns
