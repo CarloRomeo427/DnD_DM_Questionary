@@ -110,6 +110,8 @@ st.session_state.setdefault("session_encounters", [])
 st.session_state.setdefault("blocks", False)
 st.session_state.setdefault("start", False)
 
+if "has_generated" not in st.session_state:
+    st.session_state.has_generated = False
 
 if "counter" not in st.session_state:
     st.session_state.counter = 0
