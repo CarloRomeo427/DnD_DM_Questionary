@@ -199,7 +199,7 @@ def get_next_party_matrix():
 
 def generate_encounter():
     st.session_state.generated_party, st.session_state.generated_class_names = get_next_party_matrix()
-    st.session_state.party_exp = calculate_party_exp(st.session_state.generated_class_names, "hard")
+    st.session_state.party_exp = calculate_party_exp(st.session_state.generated_class_names, "deadly")
     st.session_state.start = True
     
 
@@ -278,7 +278,23 @@ def get_class_features(class_name, class_files_path):
     return class_features
 
 # --------------------- XP CALCULATIONS ---------------------
-MULTIPLIER_TABLE = {1: 1.0, 2: 1.5, 3: 2.0, 4: 2.5, 5: 3.0, 6: 4.0}
+MULTIPLIER_TABLE = {
+    1: 1.0,    # ✅ 1 → x1
+    2: 1.5,    # ✅ 2 → x1.5
+    3: 2.0,    # ✅ 3-6 → x2
+    4: 2.0,    # ✅
+    5: 2.0,    # ✅
+    6: 2.0,    # ✅
+    7: 2.5,    # ✅ 7-10 → x2.5
+    8: 2.5,    # ✅
+    9: 2.5,    # ✅
+    10: 2.5,   # ✅
+    11: 3.0,   # ✅ 11-14 → x3
+    12: 3.0,   # ✅
+    13: 3.0,   # ✅
+    14: 3.0,   # ✅
+    15: 4.0,   # ✅ 15+ → x4
+}
 exp_dict = {
     "Ape": 100, "Boar": 50, "Brown Bear": 200, "Crocodile": 100, "Displayer Beast": 700,
     "Fire Elemental": 1800, "Flameskull": 1100, "Giant Boar": 450, "Giant Centipede": 50,
@@ -287,15 +303,15 @@ exp_dict = {
     "Polar Bear": 450, "Stone Giant": 2900, "Swarm of Bats": 50, "Vampire Spawn": 1800,
     "Vampire": 10000, "Wolf": 50, "Young Dragon": 5900
 }
-enemy_options = ["None -> 0 EXP"] + [f"{name} -> {xp} EXP" for name, xp in exp_dict.items()]
+enemy_options = ["None -> 0 XP"] + [f"{name} -> {xp} XP" for name, xp in exp_dict.items()]
 enemy_option_to_xp = {opt: xp for opt, xp in zip(enemy_options, [0] + list(exp_dict.values()))}
 
 def compute_enemy_exp(selected_options):
     xp_values = [enemy_option_to_xp[o] for o in selected_options if enemy_option_to_xp[o] > 0]
     return sum(xp_values) * MULTIPLIER_TABLE.get(len(xp_values), 4.0)
 
-def calculate_party_exp(party, difficulty="hard"):
-    EXP_THRESHOLDS = {"easy": 500, "medium": 750, "hard": 1100, "deadly": 2200}
+def calculate_party_exp(party, difficulty="deadly"):
+    EXP_THRESHOLDS = {"easy": 250, "medium": 500, "hard": 750, "deadly": 1100}
     return EXP_THRESHOLDS[difficulty] * len(party)
 
 # --------------------- UI ELEMENTS ---------------------
@@ -350,7 +366,7 @@ else:
             """
             This is a research tool to test your expertise as Dungeon Master in creating balanced encounters for your party! <br>
             A balanced encounter should be challenging but not deadly for the party. <br>
-            Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value. <br>
+            Therefore, given the Party XP the Dungeon Master should select a team of enemies with a similar XP value. <br>
 
             To simulate the fights and get your statistics as a Dungeon Master, you need to submit 3 times!
 
@@ -365,7 +381,7 @@ else:
             1. Click the button to generate a random adventuring party.
             2. Each party member is Level 5, with distinct classes, stats, and abilities. Click on a class name to review its details.
             3. Based on the party's composition, select an enemy team (up to 8 creatures).
-            4. The tool will calculate the total enemy EXP and compare it against the party EXP (hard setting).
+            4. The tool will calculate the total enemy XP and compare it against the party XP (deadly setting).
             5. Adjust your enemy selection to ensure the challenge level is appropriate:
                - Too Low? The fight will be too easy and unengaging.
                - Too High? It could become overwhelming and result in a total party wipe.
@@ -398,13 +414,13 @@ else:
         st.markdown("### **Step 1: Calculate Party Thresholds**")
 
         st.write("""
-        Each adventurer level has **four XP thresholds** that determine the difficulty of an encounter:
+        Each adventurer level has **three XP thresholds** that determine the difficulty of an encounter:
         - **Easy:** The party can win with little effort or risk.
         - **Medium:** A fair challenge that might require some resources (e.g., spells, healing, positioning).
-        - **Hard:** A dangerous fight where players must strategize.
+        - **Hard:** A dangerous fight where players must strategize 
         - **Deadly:** A fight that could result in **character deaths** if they make poor choices or get unlucky.
                  
-        The tool uses the **Hard** threshold as the default for party EXP and adjusts the multiplier based on the random party generated.
+        The tool uses the **Hard** threshold as the default for party XP and adjusts the multiplier based on the random party generated.
         """)
 
         # st.markdown("### **XP Thresholds for a Level 5 Party**")
@@ -461,7 +477,7 @@ else:
 
     # --------------------- DISPLAY GENERATED PARTY & ENEMY SELECTION ---------------------
     if st.session_state.generated_party is not None:
-        st.subheader(f"Party EXP: {st.session_state.party_exp}")
+        st.subheader(f"Party XP: {st.session_state.party_exp}")
 
         # st.session_state.has_generated = True
 
@@ -499,7 +515,7 @@ else:
                 selected_enemies.append(choice)
         
         enemy_total_exp = compute_enemy_exp(selected_enemies)
-        st.subheader(f"**Enemy Encounter EXP:** {enemy_total_exp}")
+        st.subheader(f"**Enemy Encounter XP:** {enemy_total_exp}")
 
         col_sub, col_res = st.columns([3, 1])
         with col_res:

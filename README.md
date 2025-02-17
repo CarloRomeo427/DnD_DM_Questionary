@@ -1,8 +1,8 @@
-# 🛡️ D&D Encounter Generator
+# 🧙‍♂️ D&D Encounter Generation Tester 🐉
 
 ## 📖 About the Project  
 
-The **D&D Encounter Generator** is an interactive **web application** designed to help Dungeon Masters (DMs) create **balanced and engaging combat encounters** for their players.  
+The **D&D Encounter Generation Tester** is an interactive **web application** designed to help Dungeon Masters (DMs) test their skills in creating **balanced and engaging combat encounters** for their players.  
 
 A well-balanced encounter should be **challenging but not overwhelming**, ensuring that combat remains **exciting, strategic, and rewarding** without leading to frustration or unfair difficulty.  
 
@@ -15,7 +15,8 @@ This tool uses **official encounter-building rules** from the *Dungeons & Dragon
 - **Teach DMs how to balance encounters effectively** using XP values and multipliers.  
 - **Provide an interactive tool** for selecting enemies and immediately calculating the encounter difficulty.  
 - **Encourage strategic thinking** by considering action economy, enemy variety, and party composition.  
-- **Streamline the DM's preparation process** by quickly generating encounter ideas.  
+- **Collect data from human Dungeon Masters** to analyze and understand how real DMs balance challenging fights, improving encounter design recommendations.  
+
 
 ---
 
@@ -24,9 +25,10 @@ This tool uses **official encounter-building rules** from the *Dungeons & Dragon
 1. **Generate a random adventuring party** with a button click.  
 2. **View character details** by clicking on their class names.  
 3. **Choose a set of enemies** (up to 8 creatures) to challenge the party.  
-4. The app **calculates the total enemy XP** and applies the **encounter multiplier** based on the number of enemies.  
-5. The tool then **compares the enemy XP to the party’s XP thresholds**, indicating whether the fight is **Easy, Medium, Hard, or Deadly**.  
-6. Adjust your selection to **fine-tune the encounter balance** before finalizing your battle!  
+4. The app **calculates the total enemy XP** and applies the **encounter multiplier** based on the number of enemies. 
+5. After collecting **3 sets** of enemies, the app will simulate the fights of the selected encounters.
+6. To overcome the **stocasticity of dice rolling** each combat is simulated 100 times.
+7. At the end of the simulated fights, the **average statistics** for the selections made will be displayed!
 
 ---
 
@@ -40,7 +42,7 @@ The app follows the **official XP budgeting system** from the DMG:
    | Easy        | 250 XP           | 1,000 XP           |
    | Medium      | 500 XP           | 2,000 XP           |
    | Hard        | 750 XP           | 3,000 XP           |
-   | Deadly      | 1,100 XP         | 4,400 XP           |
+   | Deadly      | 1100 XP         | 4,400 XP           |
 
 2. **Encounter XP Multipliers Based on Number of Enemies**  
    | **Number of Enemies** | **XP Multiplier** |
