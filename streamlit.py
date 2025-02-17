@@ -46,11 +46,7 @@ footer = """
 }
 </style>
 <div class="footer">
-    Made by <a href="https://github.com/CarloRomeo427/DnD_DM_Questionary.git" target="_blank">Carlo Romeo</a> 
-    for the Dungeons & Dragons community with ❤️.<br> 
-    Not affiliated with or endorsed by Wizards of the Coast.<br>
-    The simulator is based on the implementation of 
-    <a href="https://github.com/DanielK314/DnDSimulator.git" target="_blank">DanielK314</a>, give him a star! 
+    Not affiliated with or endorsed by Wizards of the Coast.
 </div>
 """
 st.markdown(footer, unsafe_allow_html=True)
