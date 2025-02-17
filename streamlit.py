@@ -299,7 +299,7 @@ def calculate_party_exp(party, difficulty="hard"):
     return EXP_THRESHOLDS[difficulty] * len(party)
 
 # --------------------- UI ELEMENTS ---------------------
-st.title("🧙‍♂️ D&D Encounter Generator 🐉")
+st.title("🧙‍♂️ D&D Encounter Generation Tester 🐉")
 
 if st.session_state.blocks:
     # Show simulation results and statistics modal.
@@ -348,12 +348,13 @@ else:
         st.subheader("Welcome to the D&D Encounter Generator!")
         st.markdown(
             """
-            This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!
+            This is a research tool to test your expertise as Dungeon Master in creating balanced encounters for your party!
             A balanced encounter should be challenging but not deadly for the party.
             Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.
 
             To simulate the fights and get your statistics as a Dungeon Master, you need to submit 3 times!
 
+            Your selections will be stored in a JSON file and uploaded to GitHub for further analysis.
             Good luck and have fun!
             """
         )
