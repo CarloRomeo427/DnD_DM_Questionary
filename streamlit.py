@@ -318,6 +318,7 @@ else:
             Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.
 
             To simulate the fights and get your statistics as a Dungeon Master, you need to submit 3 times!
+
             Good luck and have fun!
             """
         )
@@ -519,5 +520,11 @@ else:
                         st.session_state.is_locked = True
                         st.session_state.blocks = True
                         st.rerun()
+
+
+    st.footer("© 2021 - Carlo Romeo - All Rights Reserved")
+    st.subfooter("This tool is for educational purposes only. All D&D content is owned by Wizards of the Coast and this tool is not affiliated with them.")
+    st.subfooter("Source code available on [GitHub](https://github.com/CarloRomeo427/DnD_DM_Questionary.git)")
+    st.subfooter("The user data is stored in the public folder [Humans] and it is used for research purposes only.")
 
                         
