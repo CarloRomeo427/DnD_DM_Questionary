@@ -313,7 +313,7 @@ else:
         st.markdown(
             """
             This tool tests your expertise as Dungeon Master in creating balanced encounters for your party!
-            A balanced encounter should be challenging but not deadly for the party!
+            A balanced encounter should be challenging but not deadly for the party.
             Therefore, given the Party EXP the Dungeon Master should select a team of enemies with a similar EXP value.
             """
         )
@@ -327,6 +327,15 @@ else:
             5. You can choose up to 8 enemies.
             6. The tool calculates the total EXP of the enemy team using classic D&D formulas.
             7. A balanced encounter should have enemy EXP close to the party's EXP.
+
+            1. Click the button to generate a random adventuring party.
+            2. Each party member is Level 5, with distinct classes, stats, and abilities. Click on a class name to review its details.
+            3. Based on the party's composition, select an enemy team (up to 8 creatures).
+            4. The tool will calculate the total enemy EXP and compare it against the party EXP (hard setting).
+            5. Adjust your enemy selection to ensure the challenge level is appropriate:
+               - Too Low? The fight will be too easy and unengaging.
+               - Too High? It could become overwhelming and result in a total party wipe.
+               - Just Right? The battle feels intense but winnable, requiring teamwork and strategy.
             """
         )
         st.subheader("Select your expertise level as Dungeon Master:")
@@ -341,18 +350,75 @@ else:
         st.markdown("---")
     else:
         # After the first encounter is generated, show the new description.
-        st.subheader("🎲 D&D Encounter Generator 🎲")
-        st.markdown(
-            """
-            The party is ready to face the next challenge!
-            Select the enemies to fight against the party and press the Submit Decision button to save the encounter data.
-            """
-        )
+        
+        st.markdown("# 🧾 Encounter Balancing: Key Concepts")
+
+        st.write("""
+        When designing encounters, keep in mind the **official XP guidelines** from the *Dungeon Master’s Guide (DMG)*.
+        A well-balanced encounter should be **challenging but not overwhelmingly deadly** to keep players engaged.
+        """)
+
+        # Step 1: Calculate Party Thresholds
+        st.markdown("## **Step 1: Calculate Party Thresholds**")
+
+        st.write("""
+        Each adventurer level has **four XP thresholds** that determine the difficulty of an encounter:
+        - **Easy:** The party can win with little effort or risk.
+        - **Medium:** A fair challenge that might require some resources (e.g., spells, healing, positioning).
+        - **Hard:** A dangerous fight where players must strategize.
+        - **Deadly:** A fight that could result in **character deaths** if they make poor choices or get unlucky.
+                 
+        The tool uses the **Hard** threshold as the default for party EXP and adjusts the multiplier based on the random party generated.
+        """)
+
+        # st.markdown("### **XP Thresholds for a Level 5 Party**")
+        # st.table({
+        #     "Difficulty": ["Easy", "Medium", "Hard", "Deadly"],
+        #     "XP per Character": ["250 XP", "500 XP", "750 XP", "1,100 XP"],
+        #     "XP for 4-Player Party": ["1,000 XP", "2,000 XP", "3,000 XP", "4,400 XP"]
+        # })
+
+        # st.write("""
+        # Multiply these values by the number of players in your party to get the **party XP budget**.
+        # """)
+
+        # Step 2: Apply Encounter Multipliers
+        st.markdown("## **Step 2: Apply the Encounter Multiplier**")
+
+        st.write("""
+        The **number of enemies** affects difficulty beyond their raw XP values.
+        More enemies = **harder fight** because of increased attacks and action economy.
+        The DMG provides an **XP multiplier** to account for this:
+        """)
+
+        st.markdown("### **Encounter XP Multipliers**")
+        st.table({
+            "Number of Enemies": ["1", "2", "3–6", "7–10", "11–14", "15+"],
+            "XP Multiplier": ["×1", "×1.5", "×2", "×2.5", "×3", "×4"]
+        })
+
+        st.write("""
+        For example, if you choose **four enemies worth 500 XP each (2,000 XP total)**,  
+        the **actual challenge XP** would be:
+
+        `2,000 XP × 2 (multiplier) = 4,000 XP → Very Hard/Deadly for a 4-player party!`
+        """)
+
+        # Step 3: Adjust and Fine-Tune
+        st.markdown("## **Step 3: Adjust and Fine-Tune**")
+
+        st.write("""
+        - **Fewer, stronger enemies** (e.g., one big boss or a couple of elite foes) make for **high-risk, high-reward** fights.
+        - **More numerous but weaker enemies** (e.g., a swarm of goblins or skeletons) can **overwhelm players with action economy**, making the fight trickier than it looks.
+        - Consider the **party’s strengths and weaknesses**—some groups handle hordes better, while others struggle with single strong foes.
+        """)
+
+
 
     # --------------------- ENCOUNTER GENERATION BUTTON ---------------------
     col_gen, col_counter = st.columns([3, 1])
     with col_gen:
-        st.button("🎲 Generate Encounter", on_click=generate_encounter, disabled=st.session_state.blocks)
+        st.button("🎲 Generate Encounter 🎲", on_click=generate_encounter, disabled=st.session_state.blocks)
     with col_counter:
         st.metric(label="YOUR SUBMISSIONS!!!", value=st.session_state.counter)
 
@@ -404,7 +470,7 @@ else:
                 reset_session()
 
         with col_sub:
-            if st.button("✅ Submit Decision", ):
+            if st.button("🛡️ Submit Decision ⚔️", ):
                 # Check if at least one enemy is selected (i.e. not "None -> 0 EXP")
                 if not any(choice != enemy_options[0] for choice in selected_enemies):
                     st.warning(
