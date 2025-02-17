@@ -1,0 +1,44 @@
+[
+    {
+        "expertise": "Expert - NPC voices so good, players forget it's you",
+        "party": [
+            "Ranger",
+            "Bard",
+            "Wizard",
+            "Wizard",
+            "Rogue"
+        ],
+        "party_exp": 5500,
+        "enemies": [
+            "None -> 0 EXP",
+            "Crocodile -> 100 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 100.0
+    },
+    {
+        "expertise": "Expert - NPC voices so good, players forget it's you",
+        "party": [
+            "Cleric",
+            "Wizard",
+            "Paladin"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "Fire Elemental -> 1800 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 1800.0
+    }
+]

@@ -1,0 +1,45 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Artificer",
+            "Paladin",
+            "Fighter",
+            "Fighter"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "Brown Bear -> 200 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 200.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Druid",
+            "Fighter",
+            "Artificer",
+            "Barbarian",
+            "Sorcerer"
+        ],
+        "party_exp": 5500,
+        "enemies": [
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "None -> 0 EXP",
+            "Brown Bear -> 200 EXP",
+            "None -> 0 EXP"
+        ],
+        "enemy_exp": 200.0
+    }
+]
