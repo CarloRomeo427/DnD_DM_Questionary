@@ -19,5 +19,26 @@
             "Wolf -> 50 XP"
         ],
         "enemy_exp": 18500.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Sorcerer",
+            "Bard",
+            "Bard",
+            "Paladin"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "Night Hag -> 1800 XP",
+            "Swarm of Bats -> 50 XP",
+            "Flameskull -> 1100 XP",
+            "Goblin -> 50 XP",
+            "Ogre -> 450 XP",
+            "Goblin -> 50 XP",
+            "Swarm of Bats -> 50 XP",
+            "Wolf -> 50 XP"
+        ],
+        "enemy_exp": 9000.0
     }
 ]
