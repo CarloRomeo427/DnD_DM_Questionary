@@ -1,0 +1,23 @@
+[
+    {
+        "expertise": "Amateur - Can handle small encounters, but big foes are scary",
+        "party": [
+            "Bard",
+            "Cleric",
+            "Monk",
+            "Ranger"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "Displayer Beast -> 700 XP",
+            "Displayer Beast -> 700 XP",
+            "Giant Eagle -> 200 XP",
+            "Giant Spider -> 200 XP",
+            "Brown Bear -> 200 XP",
+            "Ape -> 100 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 4200.0
+    }
+]
