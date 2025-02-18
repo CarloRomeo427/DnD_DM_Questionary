@@ -32,6 +32,9 @@ This tool uses **official encounter-building rules** from the *Dungeons & Dragon
 6. To overcome the **stocasticity of dice rolling** each combat is simulated 100 times.
 7. At the end of the simulated fights, the **average statistics** for the selections made will be displayed!
 
+
+[📺 Click here to watch the tutorial](DnDTutorial.mp4)
+
 ---
 
 ## 🔧 **Encounter Balancing: Key Rules Used**  
