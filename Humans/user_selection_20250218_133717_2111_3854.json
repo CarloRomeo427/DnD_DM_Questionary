@@ -1,0 +1,27 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Druid",
+            "Warlock",
+            "Sorcerer",
+            "Artificer",
+            "Bard",
+            "Paladin",
+            "Cleric",
+            "Wizard"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Ape -> 100 XP",
+            "None -> 0 XP",
+            "Boar -> 50 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 225.0
+    }
+]
