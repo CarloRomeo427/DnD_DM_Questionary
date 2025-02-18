@@ -23,5 +23,30 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 1800.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Barbarian",
+            "Barbarian",
+            "Artificer",
+            "Warlock",
+            "Monk",
+            "Paladin",
+            "Cleric",
+            "Artificer"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Displayer Beast -> 700 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 700.0
     }
 ]
