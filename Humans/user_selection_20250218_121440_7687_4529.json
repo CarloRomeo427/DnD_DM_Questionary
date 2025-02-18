@@ -1,0 +1,27 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Fighter",
+            "Barbarian",
+            "Rogue",
+            "Warlock",
+            "Barbarian",
+            "Artificer",
+            "Monk",
+            "Bard"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Fire Elemental -> 1800 XP",
+            "None -> 0 XP",
+            "Flameskull -> 1100 XP",
+            "None -> 0 XP",
+            "Flameskull -> 1100 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 8000.0
+    }
+]
