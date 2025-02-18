@@ -45,5 +45,25 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 23900.0
+    },
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Paladin",
+            "Warlock",
+            "Warlock"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Night Hag -> 1800 XP",
+            "None -> 0 XP",
+            "Night Hag -> 1800 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 5400.0
     }
 ]
