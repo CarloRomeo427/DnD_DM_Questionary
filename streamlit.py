@@ -364,8 +364,8 @@ else:
         st.subheader("Test your skills as a Dungeon Master!")
         st.markdown(
             """
-            This is a research tool to test your expertise as Dungeon Master in creating balanced encounters for your party!
-            A balanced encounter should be challenging but not deadly for the party. 
+            This is a research tool to test your expertise as Dungeon Master in creating balanced encounters for your party! \n
+            A balanced encounter should be challenging but not deadly for the party. \n
             Therefore, given the Party XP the Dungeon Master should select a team of enemies with a similar XP value. 
 
             To simulate the fights and get your statistics as a Dungeon Master, you need to submit 3 times!
