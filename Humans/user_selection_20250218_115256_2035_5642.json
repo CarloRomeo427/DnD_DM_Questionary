@@ -20,5 +20,29 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 5400.0
+    },
+    {
+        "expertise": "Expert - NPC voices so good, players forget it's you",
+        "party": [
+            "Ranger",
+            "Ranger",
+            "Sorcerer",
+            "Druid",
+            "Druid",
+            "Bard",
+            "Sorcerer"
+        ],
+        "party_exp": 7700,
+        "enemies": [
+            "Ogre -> 450 XP",
+            "None -> 0 XP",
+            "Ogre -> 450 XP",
+            "None -> 0 XP",
+            "Ogre -> 450 XP",
+            "None -> 0 XP",
+            "Ogre -> 450 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 3600.0
     }
 ]
