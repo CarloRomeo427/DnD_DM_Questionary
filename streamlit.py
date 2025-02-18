@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # GitHub Configuration
 GIT_SECRET  = os.getenv("DB_TOKEN")  # Ensure this is properly set in your environment or Streamlit secrets
-GITHUB_REPO = "CarloRomeo427/DnD_DM_Questionary/"
+GITHUB_REPO = "CarloRomeo427/DnD_Encounter_Balance_Tester/"
 GITHUB_BRANCH = "main"
 # Note: The file path is now dynamic (unique per session)
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -68,7 +68,7 @@ def push_to_github(new_line_data):
         st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
     
     file_name = st.session_state.git_filename
-    url = f"https://api.github.com/repos/CarloRomeo427/DnD_DM_Questionary/contents/Humans/{file_name}"
+    url = f"https://api.github.com/repos/CarloRomeo427/DnD_Encounter_Balance_Tester/contents/Humans/{file_name}"
     headers = {
         "Authorization": f"token {GIT_SECRET}",
         "Accept": "application/vnd.github.v3+json",
