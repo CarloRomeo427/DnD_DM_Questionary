@@ -41,5 +41,25 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 11550.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Barbarian",
+            "Rogue",
+            "Artificer"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Pirate -> 200 XP",
+            "None -> 0 XP",
+            "Pirate -> 200 XP",
+            "None -> 0 XP",
+            "Pirate -> 200 XP",
+            "None -> 0 XP",
+            "Vampire Spawn -> 1800 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 4800.0
     }
 ]
