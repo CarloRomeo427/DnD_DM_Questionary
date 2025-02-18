@@ -1,0 +1,23 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Wizard",
+            "Sorcerer",
+            "Barbarian",
+            "Sorcerer"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "Vampire Spawn -> 1800 XP",
+            "Swarm of Bats -> 50 XP",
+            "Vampire Spawn -> 1800 XP",
+            "Vampire Spawn -> 1800 XP",
+            "Vampire Spawn -> 1800 XP",
+            "Wolf -> 50 XP",
+            "Swarm of Bats -> 50 XP",
+            "Wolf -> 50 XP"
+        ],
+        "enemy_exp": 18500.0
+    }
+]
