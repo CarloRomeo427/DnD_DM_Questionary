@@ -18,5 +18,25 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 5400.0
+    },
+    {
+        "expertise": "Amateur - Can handle small encounters, but big foes are scary",
+        "party": [
+            "Sorcerer",
+            "Paladin",
+            "Sorcerer"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Goblin -> 50 XP",
+            "Wolf -> 50 XP",
+            "Goblin -> 50 XP",
+            "Wolf -> 50 XP",
+            "Goblin -> 50 XP",
+            "Night Hag -> 1800 XP",
+            "Wolf -> 50 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 5250.0
     }
 ]
