@@ -23,5 +23,29 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 225.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Barbarian",
+            "Sorcerer",
+            "Monk",
+            "Paladin",
+            "Rogue",
+            "Bard",
+            "Rogue"
+        ],
+        "party_exp": 7700,
+        "enemies": [
+            "Fire Elemental -> 1800 XP",
+            "None -> 0 XP",
+            "Displayer Beast -> 700 XP",
+            "None -> 0 XP",
+            "Fire Elemental -> 1800 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 8600.0
     }
 ]
