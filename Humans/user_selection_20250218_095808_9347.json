@@ -1,0 +1,27 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Barbarian",
+            "Monk",
+            "Ranger",
+            "Druid",
+            "Artificer",
+            "Fighter",
+            "Fighter",
+            "Monk"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "Displayer Beast -> 700 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 700.0
+    }
+]
