@@ -1,0 +1,22 @@
+[
+    {
+        "expertise": "Amateur - Can handle small encounters, but big foes are scary",
+        "party": [
+            "Sorcerer",
+            "Paladin",
+            "Sorcerer"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Displayer Beast -> 700 XP",
+            "Displayer Beast -> 700 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 3000.0
+    }
+]
