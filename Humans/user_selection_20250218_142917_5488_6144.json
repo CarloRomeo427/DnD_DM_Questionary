@@ -1,0 +1,22 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Bard",
+            "Ranger",
+            "Barbarian"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Night Hag -> 1800 XP",
+            "Pirate -> 200 XP",
+            "Pirate -> 200 XP",
+            "None -> 0 XP",
+            "Pirate -> 200 XP",
+            "None -> 0 XP",
+            "Pirate -> 200 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 5200.0
+    }
+]
