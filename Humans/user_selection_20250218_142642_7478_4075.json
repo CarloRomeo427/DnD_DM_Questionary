@@ -1,0 +1,23 @@
+[
+    {
+        "expertise": "Amateur - Can handle small encounters, but big foes are scary",
+        "party": [
+            "Paladin",
+            "Fighter",
+            "Druid",
+            "Warlock"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "Night Hag -> 1800 XP",
+            "Ape -> 100 XP",
+            "Ape -> 100 XP",
+            "Ape -> 100 XP",
+            "Ape -> 100 XP",
+            "Ape -> 100 XP",
+            "Ape -> 100 XP",
+            "Ape -> 100 XP"
+        ],
+        "enemy_exp": 6250.0
+    }
+]
