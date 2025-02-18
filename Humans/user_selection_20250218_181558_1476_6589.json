@@ -20,5 +20,27 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 7500.0
+    },
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Paladin",
+            "Fighter",
+            "Fighter",
+            "Bard",
+            "Barbarian"
+        ],
+        "party_exp": 5500,
+        "enemies": [
+            "Crocodile -> 100 XP",
+            "Crocodile -> 100 XP",
+            "Giant Crocodile -> 1800 XP",
+            "Crocodile -> 100 XP",
+            "Crocodile -> 100 XP",
+            "Crocodile -> 100 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 4600.0
     }
 ]
