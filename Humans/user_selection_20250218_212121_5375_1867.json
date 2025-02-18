@@ -21,5 +21,27 @@
             "Fire Elemental -> 1800 XP"
         ],
         "enemy_exp": 62600.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Fighter",
+            "Ranger",
+            "Fighter",
+            "Ranger",
+            "Fighter"
+        ],
+        "party_exp": 5500,
+        "enemies": [
+            "Giant Crocodile -> 1800 XP",
+            "Stone Giant -> 2900 XP",
+            "Fire Elemental -> 1800 XP",
+            "Young Dragon -> 5900 XP",
+            "Vampire -> 10000 XP",
+            "Giant Wasp -> 100 XP",
+            "Swarm of Bats -> 50 XP",
+            "Fire Elemental -> 1800 XP"
+        ],
+        "enemy_exp": 60875.0
     }
 ]
