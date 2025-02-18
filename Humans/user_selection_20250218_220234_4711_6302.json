@@ -38,5 +38,26 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 3000.0
+    },
+    {
+        "expertise": "Amateur - Can handle small encounters, but big foes are scary",
+        "party": [
+            "Rogue",
+            "Monk",
+            "Artificer",
+            "Druid"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "Night Hag -> 1800 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Swarm of Bats -> 50 XP",
+            "Swarm of Bats -> 50 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 4100.0
     }
 ]
