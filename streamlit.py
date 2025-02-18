@@ -406,7 +406,7 @@ else:
         st.markdown("### 🧾 Encounter Balancing: Key Concepts")
 
         st.write("""
-        When designing encounters, keep in mind the **official XP guidelines** from the *Dungeon Master’s Guide (DMG)*.
+        When designing encounters, keep in mind the **official XP guidelines** from the *Dungeon Master’s Guide (DMG)*.  \n
         A well-balanced encounter should be **challenging but not overwhelmingly deadly** to keep players engaged.
         """)
 
@@ -438,8 +438,8 @@ else:
         st.markdown("### **Step 2: Apply the Encounter Multiplier**")
 
         st.write("""
-        The **number of enemies** affects difficulty beyond their raw XP values.
-        More enemies = **harder fight** because of increased attacks and action economy.
+        The **number of enemies** affects difficulty beyond their raw XP values.  \n
+        More enemies = **harder fight** because of increased attacks and action economy. \n
         The DMG provides an **XP multiplier** to account for this:
         """)
 
