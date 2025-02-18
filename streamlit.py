@@ -65,7 +65,8 @@ def push_to_github(new_line_data):
     if "git_filename" not in st.session_state:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         random_int = rnd.randint(1000, 9999)
-        st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}.json"
+        random_int_2 = rnd.randint(1000, 9999)
+        st.session_state.git_filename = f"user_selection_{timestamp}_{random_int}_{random_int_2}.json"
     
     file_name = st.session_state.git_filename
     url = f"https://api.github.com/repos/CarloRomeo427/DnD_Encounter_Balance_Tester/contents/Humans/{file_name}"
