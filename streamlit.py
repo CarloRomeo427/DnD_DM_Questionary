@@ -420,7 +420,8 @@ else:
         - **Hard:** A dangerous fight where players must strategize 
         - **Deadly:** A fight that could result in **character deaths** if they make poor choices or get unlucky.
                  
-        The tool sets the Deadly threshold as the default party XP, aiming to create a true challenge. However, be cautious—push too hard, and you might wipe out the entire party!
+        The tool sets the Deadly threshold as the default party XP, aiming to create a true challenge. \n
+        However, be cautious—push too hard, and you might wipe out the entire party!
         """)
 
         # st.markdown("### **XP Thresholds for a Level 5 Party**")
