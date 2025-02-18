@@ -1,0 +1,23 @@
+[
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Monk",
+            "Ranger",
+            "Druid",
+            "Sorcerer"
+        ],
+        "party_exp": 4400,
+        "enemies": [
+            "Vampire Spawn -> 1800 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "None -> 0 XP",
+            "Goblin -> 50 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 4100.0
+    }
+]
