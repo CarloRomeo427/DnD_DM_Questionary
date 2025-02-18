@@ -42,5 +42,27 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 1300.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Druid",
+            "Druid",
+            "Monk",
+            "Paladin",
+            "Barbarian"
+        ],
+        "party_exp": 5500,
+        "enemies": [
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Giant Scorpion -> 700 XP",
+            "Goblin -> 50 XP",
+            "Giant Scorpion -> 700 XP"
+        ],
+        "enemy_exp": 4250.0
     }
 ]
