@@ -22,5 +22,27 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 10800.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Wizard",
+            "Druid",
+            "Monk",
+            "Fighter",
+            "Monk"
+        ],
+        "party_exp": 5500,
+        "enemies": [
+            "Displayer Beast -> 700 XP",
+            "Wolf -> 50 XP",
+            "Polar Bear -> 450 XP",
+            "None -> 0 XP",
+            "Giant Boar -> 450 XP",
+            "None -> 0 XP",
+            "Giant Scorpion -> 700 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 4700.0
     }
 ]
