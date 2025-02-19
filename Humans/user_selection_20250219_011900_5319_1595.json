@@ -23,5 +23,29 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 7600.0
+    },
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Sorcerer",
+            "Artificer",
+            "Wizard",
+            "Paladin",
+            "Ranger",
+            "Artificer",
+            "Warlock"
+        ],
+        "party_exp": 7700,
+        "enemies": [
+            "Night Hag -> 1800 XP",
+            "Giant Spider -> 200 XP",
+            "Goblin -> 50 XP",
+            "Giant Spider -> 200 XP",
+            "Goblin -> 50 XP",
+            "Giant Spider -> 200 XP",
+            "Goblin -> 50 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 6375.0
     }
 ]
