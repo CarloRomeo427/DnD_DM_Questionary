@@ -23,5 +23,30 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 12300.0
+    },
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Monk",
+            "Druid",
+            "Barbarian",
+            "Druid",
+            "Ranger",
+            "Barbarian",
+            "Barbarian",
+            "Monk"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Fire Elemental -> 1800 XP",
+            "Goblin -> 50 XP",
+            "Ogre -> 450 XP",
+            "Goblin -> 50 XP",
+            "Wolf -> 50 XP",
+            "Wolf -> 50 XP",
+            "Night Hag -> 1800 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 10625.0
     }
 ]
