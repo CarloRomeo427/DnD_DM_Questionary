@@ -22,5 +22,30 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 5900.0
+    },
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Bard",
+            "Monk",
+            "Bard",
+            "Rogue",
+            "Artificer",
+            "Druid",
+            "Bard",
+            "Cleric"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Young Dragon -> 5900 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 5900.0
     }
 ]
