@@ -1,0 +1,26 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Rogue",
+            "Cleric",
+            "Artificer",
+            "Wizard",
+            "Cleric",
+            "Sorcerer",
+            "Druid"
+        ],
+        "party_exp": 7700,
+        "enemies": [
+            "Night Hag -> 1800 XP",
+            "None -> 0 XP",
+            "Vampire Spawn -> 1800 XP",
+            "None -> 0 XP",
+            "Fire Elemental -> 1800 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 10800.0
+    }
+]
