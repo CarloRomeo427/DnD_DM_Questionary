@@ -42,5 +42,25 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 6600.0
+    },
+    {
+        "expertise": "Amateur - Can handle small encounters, but big foes are scary",
+        "party": [
+            "Bard",
+            "Ranger",
+            "Barbarian"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Fire Elemental -> 1800 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "Giant Scorpion -> 700 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 3750.0
     }
 ]
