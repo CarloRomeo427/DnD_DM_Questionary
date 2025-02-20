@@ -19,5 +19,25 @@
             "None -> 0 XP"
         ],
         "enemy_exp": 15600.0
+    },
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Artificer",
+            "Monk",
+            "Monk"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Giant Eagle -> 200 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 200.0
     }
 ]
