@@ -1,0 +1,27 @@
+[
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Rogue",
+            "Wizard",
+            "Barbarian",
+            "Bard",
+            "Sorcerer",
+            "Cleric",
+            "Monk",
+            "Fighter"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Goblin -> 50 XP",
+            "None -> 0 XP",
+            "Boar -> 50 XP",
+            "None -> 0 XP",
+            "Fire Elemental -> 1800 XP",
+            "None -> 0 XP",
+            "Night Hag -> 1800 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 7400.0
+    }
+]
