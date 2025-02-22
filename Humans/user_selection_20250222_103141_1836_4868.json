@@ -1,0 +1,22 @@
+[
+    {
+        "expertise": "Skilled - Runs epic battles with minimal confusion",
+        "party": [
+            "Bard",
+            "Ranger",
+            "Barbarian"
+        ],
+        "party_exp": 3300,
+        "enemies": [
+            "Displayer Beast -> 700 XP",
+            "Goblin -> 50 XP",
+            "Boar -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP",
+            "Goblin -> 50 XP"
+        ],
+        "enemy_exp": 2625.0
+    }
+]
