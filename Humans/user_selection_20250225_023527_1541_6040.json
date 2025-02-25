@@ -1,0 +1,25 @@
+[
+    {
+        "expertise": "Noob - Still learning what a d20 is",
+        "party": [
+            "Rogue",
+            "Ranger",
+            "Fighter",
+            "Artificer",
+            "Artificer",
+            "Bard"
+        ],
+        "party_exp": 6600,
+        "enemies": [
+            "Brown Bear -> 200 XP",
+            "Brown Bear -> 200 XP",
+            "Brown Bear -> 200 XP",
+            "Brown Bear -> 200 XP",
+            "Brown Bear -> 200 XP",
+            "Brown Bear -> 200 XP",
+            "Brown Bear -> 200 XP",
+            "Brown Bear -> 200 XP"
+        ],
+        "enemy_exp": 4000.0
+    }
+]
