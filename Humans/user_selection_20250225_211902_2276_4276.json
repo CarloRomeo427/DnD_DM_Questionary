@@ -1,0 +1,27 @@
+[
+    {
+        "expertise": "Expert - NPC voices so good, players forget it's you",
+        "party": [
+            "Warlock",
+            "Paladin",
+            "Monk",
+            "Bard",
+            "Sorcerer",
+            "Fighter",
+            "Wizard",
+            "Warlock"
+        ],
+        "party_exp": 8800,
+        "enemies": [
+            "Fire Elemental -> 1800 XP",
+            "Displayer Beast -> 700 XP",
+            "Displayer Beast -> 700 XP",
+            "Night Hag -> 1800 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP",
+            "None -> 0 XP"
+        ],
+        "enemy_exp": 10000.0
+    }
+]
